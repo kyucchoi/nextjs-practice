@@ -42,7 +42,7 @@ export default function ExchangeRateRQ() {
   return (
     <div>
       <div className="flex w-[320px] flex-col gap-4 rounded-lg border p-8 shadow-sm">
-        <div>React_Query</div>
+        <div>React-Query</div>
 
         <Select
           onValueChange={setSelectedCountry}
