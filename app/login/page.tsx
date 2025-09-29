@@ -1,6 +1,15 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
+  const router = useRouter();
+
+  const handleLogin = () => {
+    window.location.href =
+      'https://port-0-tetz-night-back-m5yo5gmx92cc34bc.sel4.cloudtype.app/api/auth/kakao';
+  };
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <div className="text-center">
@@ -13,9 +22,10 @@ export default function LoginPage() {
       <Button
         className="w-full max-w-xs kakao-login text-black font-medium mt-8"
         size="lg"
+        onClick={handleLogin}
       >
         <i className="fa-brands fa-kakao-talk"></i>
-        <span>카카오톡 로그인</span>
+        <div>카카오톡 로그인</div>
       </Button>
     </div>
   );
