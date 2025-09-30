@@ -10,6 +10,7 @@ export default function LoginPage() {
     window.location.href =
       'https://port-0-tetz-night-back-m5yo5gmx92cc34bc.sel4.cloudtype.app/api/auth/kakao';
   };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <div className="text-center">
