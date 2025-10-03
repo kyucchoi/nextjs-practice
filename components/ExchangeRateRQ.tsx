@@ -10,10 +10,13 @@ import {
 } from '@/components/ui/select';
 import { useQuery } from '@tanstack/react-query';
 
+interface ExchangeRate {
+  currency: string;
+  rate: string;
+}
+
 interface ExchangeRateResponse {
-  data: {
-    [country: string]: string;
-  };
+  rates: ExchangeRate[];
   executionTimeMs: number;
 }
 
@@ -24,8 +27,16 @@ export default function ExchangeRateRQ() {
     queryKey: ['exchange-rates'],
     queryFn: async () => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_EXCHANGE_RATE_API_URL}/api/v1/exchange/rate/all/async`
+        `${process.env.NEXT_PUBLIC_EXCHANGE_RATE_API_URL}/api/v1/exchange/rate/all/async`,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_AUTH_TOKEN}`,
+          },
+        }
       );
+      if (response.status === 403) {
+        throw new Error('인증이 만료되었습니다. 토큰을 갱신해주세요.');
+      }
       if (!response.ok) {
         throw new Error('환율 데이터를 가져오는데 실패했습니다');
       }
@@ -37,7 +48,7 @@ export default function ExchangeRateRQ() {
   if (isError) return <p>에러 발생!</p>;
   if (!data) return <p>데이터가 없습니다.</p>;
 
-  const currencies = Object.keys(data.data);
+  const selectedRate = data.rates.find((r) => r.currency === selectedCountry);
 
   return (
     <div>
@@ -52,17 +63,21 @@ export default function ExchangeRateRQ() {
             <SelectValue placeholder="나라를 선택해주세요" />
           </SelectTrigger>
           <SelectContent>
-            {currencies.map((country) => (
-              <SelectItem key={country} value={country}>
-                {country}
+            {data.rates.map((rate) => (
+              <SelectItem key={rate.currency} value={rate.currency}>
+                {rate.currency}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
 
-        <h4>{selectedCountry}</h4>
-        <p>1 {selectedCountry} =</p>
-        <h2>{data.data[selectedCountry]} KRW</h2>
+        {selectedCountry && selectedRate && (
+          <>
+            <h4>{selectedCountry}</h4>
+            <p>1 {selectedCountry} =</p>
+            <h2>{selectedRate.rate} KRW</h2>
+          </>
+        )}
       </div>
     </div>
   );

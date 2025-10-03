@@ -10,10 +10,13 @@ import {
 } from '@/components/ui/select';
 import axios from 'axios';
 
+interface ExchangeRate {
+  currency: string;
+  rate: string;
+}
+
 interface ExchangeRateResponse {
-  data: {
-    [country: string]: string;
-  };
+  rates: ExchangeRate[];
   executionTimeMs: number;
 }
 
@@ -30,7 +33,12 @@ export default function ExchangeRateAxios() {
         setIsError(false);
 
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_EXCHANGE_RATE_API_URL}/api/v1/exchange/rate/all/async`
+          `${process.env.NEXT_PUBLIC_EXCHANGE_RATE_API_URL}/api/v1/exchange/rate/all/async`,
+          {
+            headers: {
+              Authorization: `Bearer ${process.env.NEXT_PUBLIC_AUTH_TOKEN}`,
+            },
+          }
         );
         setData(response.data);
       } catch (error) {
@@ -48,7 +56,7 @@ export default function ExchangeRateAxios() {
   if (isError) return <p>에러 발생!</p>;
   if (!data) return <p>데이터가 없습니다.</p>;
 
-  const currencies = Object.keys(data.data);
+  const selectedRate = data.rates.find((r) => r.currency === selectedCountry);
 
   return (
     <div>
@@ -63,17 +71,21 @@ export default function ExchangeRateAxios() {
             <SelectValue placeholder="나라를 선택해주세요" />
           </SelectTrigger>
           <SelectContent>
-            {currencies.map((country) => (
-              <SelectItem key={country} value={country}>
-                {country}
+            {data.rates.map((rate) => (
+              <SelectItem key={rate.currency} value={rate.currency}>
+                {rate.currency}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
 
-        <h4>{selectedCountry}</h4>
-        <p>1 {selectedCountry} =</p>
-        <h2>{data.data[selectedCountry]} KRW</h2>
+        {selectedCountry && selectedRate && (
+          <>
+            <h4>{selectedCountry}</h4>
+            <p>1 {selectedCountry} =</p>
+            <h2>{selectedRate.rate} KRW</h2>
+          </>
+        )}
       </div>
     </div>
   );

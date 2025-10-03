@@ -6,8 +6,6 @@ const withPWA = require('next-pwa')({
   skipWaiting: true,
 });
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
+const nextConfig: NextConfig = {};
 
 export default withPWA(nextConfig);
