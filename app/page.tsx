@@ -1,11 +1,9 @@
-import ExchangeRateAxios from '@/components/ExchangeRateAxios';
-import ExchangeRateRQ from '@/components/ExchangeRateRQ';
+import DashboardDndKit from '@/components/DashboardDndKit';
 
 export default function Home() {
   return (
     <div className="mx-5">
-      <ExchangeRateAxios />
-      <ExchangeRateRQ />
+      <DashboardDndKit />
     </div>
   );
 }

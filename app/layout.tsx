@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import Providers from './providers';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
