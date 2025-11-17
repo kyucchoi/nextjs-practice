@@ -6,9 +6,9 @@ import AICompareWidget from '@/components/AICompareWidget';
 export default function Home() {
   return (
     <div className="mx-5">
-      {/* <DashboardDndKit /> */}
+      <DashboardDndKit />
       {/* <AIMessageWidget /> */}
-      <TodoTable />
+      {/* <TodoTable /> */}
       {/* <AICompareWidget /> */}
     </div>
   );
