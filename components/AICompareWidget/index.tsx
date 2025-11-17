@@ -11,7 +11,7 @@ interface Message {
   content: string;
 }
 
-export default function AIMessageWidget() {
+export default function AICompareWidget() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -35,7 +35,7 @@ export default function AIMessageWidget() {
     try {
       const url = `${
         process.env.NEXT_PUBLIC_API_URL
-      }/api/ai/stream?message=${encodeURIComponent(trimmedInput)}&provider=GPT`;
+      }/api/ai/stream/compare?message=${encodeURIComponent(trimmedInput)}`;
 
       const response = await fetch(url);
       const reader = response.body?.getReader();
@@ -53,6 +53,7 @@ export default function AIMessageWidget() {
         const text = decoder.decode(value);
         const lines = text.split('\n');
 
+        // SSE 형식 파싱 (data: 로 시작하는 라인 추출)
         for (const line of lines) {
           if (line.startsWith('data:')) {
             const data = line.slice(5);
@@ -64,6 +65,7 @@ export default function AIMessageWidget() {
         }
       }
 
+      // 스트리밍 완료 후 완성된 메시지를 히스토리에 추가
       const aiMessage: Message = {
         id: Date.now().toString(),
         role: 'ai',
@@ -84,7 +86,7 @@ export default function AIMessageWidget() {
         <div className="h-60 overflow-y-auto">
           {messages.map((message) => (
             <div key={message.id}>
-              <strong>{message.role === 'ai' ? 'T1 TETZ' : '나'}:</strong>
+              <strong>{message.role === 'ai' ? 'AI 비교' : '나'}:</strong>
               {message.content}
             </div>
           ))}
@@ -92,20 +94,21 @@ export default function AIMessageWidget() {
           {isLoading && !streamingMessage && (
             <div>
               <Spinner />
+              <p className="text-sm text-gray-500">AI를 비교 중입니다...</p>
             </div>
           )}
 
           {/* 스트리밍 중인 메시지 실시간 표시 */}
           {streamingMessage && (
             <div>
-              <strong>T1 TETZ:</strong> {streamingMessage}
+              <strong>AI 비교:</strong> {streamingMessage}
             </div>
           )}
         </div>
 
         <div className="flex gap-2">
           <Textarea
-            placeholder="뭐든지 물어보세요!"
+            placeholder="AI의 공통 답변을 받아보세요!"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {

@@ -27,7 +27,7 @@ export default function ExchangeRateRQ() {
     queryKey: ['exchange-rates'],
     queryFn: async () => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_EXCHANGE_RATE_API_URL}/api/v1/exchange/rate/all/async`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/exchange/rate/all/async`,
         {
           headers: {
             Authorization: `Bearer ${process.env.NEXT_PUBLIC_AUTH_TOKEN}`,
@@ -52,7 +52,7 @@ export default function ExchangeRateRQ() {
 
   return (
     <div>
-      <div className="flex w-auto flex-col gap-4 rounded-lg border p-8 shadow-sm">
+      <div className="flex w-auto flex-col gap-4 rounded-b-lg border p-8 shadow-sm">
         <div>React-Query</div>
 
         <Select
