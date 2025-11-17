@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { WidgetBox } from '@/components/ui/widget-box';
 import axios from 'axios';
 
 interface ExchangeRate {
@@ -60,7 +61,7 @@ export default function ExchangeRateAxios() {
 
   return (
     <div>
-      <div className="flex w-auto flex-col gap-4 rounded-b-lg border p-8 shadow-sm">
+      <WidgetBox className="p-8">
         <div>Axios</div>
 
         <Select
@@ -86,7 +87,7 @@ export default function ExchangeRateAxios() {
             <h2>{selectedRate.rate} KRW</h2>
           </>
         )}
-      </div>
+      </WidgetBox>
     </div>
   );
 }

@@ -1,16 +1,11 @@
 'use client';
 
 import * as React from 'react';
-import {
-  Check,
-  MoreHorizontal,
-  Plus,
-  ChevronDown,
-  ArrowUpDown,
-} from 'lucide-react';
+import { Check, MoreHorizontal, ChevronDown, ArrowUpDown } from 'lucide-react';
 import { Toggle } from '@/components/ui/toggle';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { WidgetBox } from '@/components/ui/widget-box';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -37,46 +32,22 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-
-export type Todo = {
-  id: number;
-  task: string;
-  completed: boolean;
-  createdAt: string;
-};
-
-const sampleData: Todo[] = [
-  {
-    id: 0,
-    task: '샘플 할 일',
-    completed: false,
-    createdAt: '2025-11-13T13:57:54.738Z',
-  },
-  {
-    id: 1,
-    task: '샘플 할 일',
-    completed: false,
-    createdAt: '2025-11-14T13:57:54.738Z',
-  },
-  {
-    id: 2,
-    task: '샘플 할 일',
-    completed: false,
-    createdAt: '2025-11-15T13:57:54.738Z',
-  },
-  {
-    id: 3,
-    task: '샘플 할 일',
-    completed: false,
-    createdAt: '2025-11-16T13:57:54.738Z',
-  },
-];
+import {
+  getTodos,
+  createTodo,
+  updateTodo,
+  deleteTodo,
+  completeTodo,
+  incompleteTodo,
+  type Todo,
+} from '@/lib/api/todo';
 
 type SortField = 'createdAt' | 'completed' | null;
 type SortOrder = 'asc' | 'desc';
 
 export function TodoTable() {
-  const [todos, setTodos] = React.useState<Todo[]>(sampleData);
+  const [todos, setTodos] = React.useState<Todo[]>([]);
+  const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [editOpen, setEditOpen] = React.useState(false);
   const [newTask, setNewTask] = React.useState('');
@@ -95,6 +66,25 @@ export function TodoTable() {
     createdAt: true,
     completed: true,
   });
+
+  // 초기 데이터 로드
+  React.useEffect(() => {
+    fetchTodos();
+  }, []);
+
+  // TODO 목록 조회
+  const fetchTodos = async () => {
+    try {
+      setLoading(true);
+      const data = await getTodos();
+      setTodos(data);
+    } catch (error) {
+      console.error('Failed to fetch todos:', error);
+      alert('할 일 목록을 불러오는데 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // 날짜 포맷 변환 (ISO → 한국 날짜)
   const formatDate = (dateString: string) => {
@@ -165,29 +155,36 @@ export function TodoTable() {
   }, [searchTerm, sortField, sortOrder]);
 
   // 완료 상태 토글
-  const handleToggleComplete = (id: number) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
+  const handleToggleComplete = async (id: number, completed: boolean) => {
+    try {
+      if (completed) {
+        await incompleteTodo(id);
+      } else {
+        await completeTodo(id);
+      }
+      // 성공하면 목록 다시 불러오기
+      await fetchTodos();
+    } catch (error) {
+      console.error('Failed to toggle todo:', error);
+      alert('할 일 상태 변경에 실패했습니다.');
+    }
   };
 
   // 할 일 추가
-  const handleAddTodo = (e: React.FormEvent) => {
+  const handleAddTodo = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTask.trim()) return;
 
-    const newTodo: Todo = {
-      id: todos.length > 0 ? Math.max(...todos.map((t) => t.id)) + 1 : 0,
-      task: newTask,
-      completed: false,
-      createdAt: new Date().toISOString(),
-    };
-
-    setTodos([...todos, newTodo]);
-    setNewTask('');
-    setOpen(false);
+    try {
+      await createTodo(newTask);
+      setNewTask('');
+      setOpen(false);
+      // 성공하면 목록 다시 불러오기
+      await fetchTodos();
+    } catch (error) {
+      console.error('Failed to create todo:', error);
+      alert('할 일 추가에 실패했습니다.');
+    }
   };
 
   // 수정 Dialog 열기
@@ -198,28 +195,37 @@ export function TodoTable() {
   };
 
   // 할 일 수정
-  const handleEditTodo = (e: React.FormEvent) => {
+  const handleEditTodo = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editTask.trim() || !editingTodo) return;
 
-    setTodos(
-      todos.map((todo) =>
-        todo.id === editingTodo.id ? { ...todo, task: editTask } : todo
-      )
-    );
-
-    setEditTask('');
-    setEditingTodo(null);
-    setEditOpen(false);
+    try {
+      await updateTodo(editingTodo.id, editTask);
+      setEditTask('');
+      setEditingTodo(null);
+      setEditOpen(false);
+      // 성공하면 목록 다시 불러오기
+      await fetchTodos();
+    } catch (error) {
+      console.error('Failed to update todo:', error);
+      alert('할 일 수정에 실패했습니다.');
+    }
   };
 
   // 할 일 삭제
-  const handleDeleteTodo = (id: number) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+  const handleDeleteTodo = async (id: number) => {
+    try {
+      await deleteTodo(id);
+      // 성공하면 목록 다시 불러오기
+      await fetchTodos();
+    } catch (error) {
+      console.error('Failed to delete todo:', error);
+      alert('할 일 삭제에 실패했습니다.');
+    }
   };
 
   return (
-    <div className="w-full">
+    <WidgetBox>
       <div className="mb-4 flex items-center justify-between gap-2">
         {/* 검색 */}
         <Input
@@ -234,7 +240,7 @@ export function TodoTable() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">
-                Columns <ChevronDown className="ml-2 h-4 w-4" />
+                항목 표시 <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -268,9 +274,7 @@ export function TodoTable() {
           {/* 추가 Dialog */}
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button type="button" variant="outline">
-                할 일 추가
-              </Button>
+              <Button type="button">할 일 추가</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <form onSubmit={handleAddTodo}>
@@ -366,7 +370,18 @@ export function TodoTable() {
           </TableHeader>
           <TableBody>
             {/* 할 일 목록 렌더링 */}
-            {currentTodos.length > 0 ? (
+            {loading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={
+                    Object.values(columnVisibility).filter(Boolean).length + 1
+                  }
+                  className="h-24 text-center"
+                >
+                  로딩 중...
+                </TableCell>
+              </TableRow>
+            ) : currentTodos.length > 0 ? (
               currentTodos.map((todo) => (
                 <TableRow key={todo.id}>
                   {columnVisibility.task && (
@@ -382,7 +397,9 @@ export function TodoTable() {
                       {/* 완료 토글 버튼 */}
                       <Toggle
                         pressed={todo.completed}
-                        onPressedChange={() => handleToggleComplete(todo.id)}
+                        onPressedChange={() =>
+                          handleToggleComplete(todo.id, todo.completed)
+                        }
                         aria-label="완료 표시"
                         size="sm"
                         variant="outline"
@@ -435,7 +452,7 @@ export function TodoTable() {
 
       {/* 페이지네이션 */}
       {filteredAndSortedTodos.length > 0 && (
-        <div className="flex items-center justify-between py-4">
+        <div className="flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
             {totalPages}페이지 중 {currentPage}페이지
           </div>
@@ -457,6 +474,6 @@ export function TodoTable() {
           </div>
         </div>
       )}
-    </div>
+    </WidgetBox>
   );
 }

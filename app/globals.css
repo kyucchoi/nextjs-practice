@@ -121,6 +121,11 @@
   }
 }
 
+html,
+body {
+  overscroll-behavior: none;
+}
+
 .kakao-login {
   background-color: #fee500;
   color: #000000;

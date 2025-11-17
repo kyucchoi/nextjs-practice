@@ -7,8 +7,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   const handleLogin = () => {
-    window.location.href =
-      'https://port-0-tetz-night-back-m5yo5gmx92cc34bc.sel4.cloudtype.app/api/auth/kakao';
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/auth/kakao`;
   };
 
   return (

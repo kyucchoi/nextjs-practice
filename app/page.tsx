@@ -9,7 +9,7 @@ export default function Home() {
       {/* <DashboardDndKit /> */}
       {/* <AIMessageWidget /> */}
       <TodoTable />
-      <AICompareWidget />
+      {/* <AICompareWidget /> */}
     </div>
   );
 }
