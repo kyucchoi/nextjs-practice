@@ -24,20 +24,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import ExchangeRateAxios from './ExchangeRateAxios';
-import ExchangeRateRQ from './ExchangeRateRQ';
-import AIMessageWidget from './AIMessageWidget';
-import AICompareWidget from './AICompareWidget';
-import { TodoTable } from './TodoTable';
-
-// 사용 가능한 위젯 목록
-const AVAILABLE_WIDGETS = [
-  { id: 'axios', name: '환율 (Axios)', component: ExchangeRateAxios },
-  { id: 'rq', name: '환율 (React Query)', component: ExchangeRateRQ },
-  { id: 'ai-message', name: 'AI 채팅', component: AIMessageWidget },
-  { id: 'ai-compare', name: 'AI 비교', component: AICompareWidget },
-  { id: 'todo', name: 'Todo', component: TodoTable },
-];
+import { widgetStore, AVAILABLE_WIDGETS } from '@/store/widgetStore';
 
 // 드래그 가능한 아이템 컴포넌트
 function SortableItem({
@@ -93,13 +80,8 @@ function SortableItem({
 
 // 위젯 드래그 정렬 대시보드
 export default function DashboardDndKit() {
-  const [widgets, setWidgets] = useState([
-    { id: 'axios', component: ExchangeRateAxios },
-    { id: 'rq', component: ExchangeRateRQ },
-    { id: 'ai-message', component: AIMessageWidget },
-    { id: 'todo', component: TodoTable },
-  ]);
-
+  // Zustand로 변경
+  const { widgets, addWidget, removeWidget } = widgetStore();
   const [activeId, setActiveId] = useState<string | null>(null);
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -113,33 +95,23 @@ export default function DashboardDndKit() {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      setWidgets((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
-        return arrayMove(items, oldIndex, newIndex);
-      });
+      const oldIndex = widgets.findIndex((item) => item.id === active.id);
+      const newIndex = widgets.findIndex((item) => item.id === over.id);
+
+      // Zustand store 업데이트
+      const newWidgets = arrayMove(widgets, oldIndex, newIndex);
+      widgetStore.setState({ widgets: newWidgets });
     }
 
     setActiveId(null);
   };
 
-  // 위젯 제거
-  const handleRemoveWidget = (id: string) => {
-    setWidgets((prev) => prev.filter((widget) => widget.id !== id));
-  };
-
   // 위젯 추가/제거 토글
   const handleToggleWidget = (widgetId: string, checked: boolean) => {
     if (checked) {
-      const widgetToAdd = AVAILABLE_WIDGETS.find((w) => w.id === widgetId);
-      if (widgetToAdd) {
-        setWidgets((prev) => [
-          ...prev,
-          { id: widgetToAdd.id, component: widgetToAdd.component },
-        ]);
-      }
+      addWidget(widgetId); // Zustand 사용
     } else {
-      handleRemoveWidget(widgetId);
+      removeWidget(widgetId); // Zustand 사용
     }
   };
 
@@ -173,29 +145,41 @@ export default function DashboardDndKit() {
         </DropdownMenu>
       </div>
 
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext
-          items={widgets.map((w) => w.id)}
-          strategy={verticalListSortingStrategy}
-        >
-          <div className="space-y-4">
-            {widgets.map((widget) => (
-              <SortableItem
-                key={widget.id}
-                id={widget.id}
-                component={widget.component}
-                isDragging={activeId === widget.id}
-                onRemove={handleRemoveWidget}
-              />
-            ))}
+      {/* 위젯이 없을 때 메시지 */}
+      {widgets.length === 0 ? (
+        <div className="flex items-center justify-center min-h-[400px] text-center">
+          <div className="text-muted-foreground">
+            <p className="text-lg">위젯을 추가해보세요!</p>
+            <p className="text-sm mt-2">
+              우측 상단의 &quot;위젯 추가&quot; 버튼을 눌러보세요!
+            </p>
           </div>
-        </SortableContext>
-      </DndContext>
+        </div>
+      ) : (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={widgets.map((w) => w.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="space-y-4">
+              {widgets.map((widget) => (
+                <SortableItem
+                  key={widget.id}
+                  id={widget.id}
+                  component={widget.component}
+                  isDragging={activeId === widget.id}
+                  onRemove={removeWidget}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
+      )}
     </div>
   );
 }
