@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from './ui/button';
-import { Textarea } from './ui/textarea';
-import { Spinner } from './ui/spinner';
-import { WidgetBox } from './ui/widget-box';
+import { Button } from '../ui/button';
+import { Textarea } from '../ui/textarea';
+import { Spinner } from '../ui/spinner';
+import { WidgetBox } from '../ui/widget-box';
 
 interface Message {
   id: string;

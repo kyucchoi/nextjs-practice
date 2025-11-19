@@ -1,9 +1,10 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import AIMessageWidget from '@/components/AIMessageWidget';
-import { TodoTable } from '@/components/TodoTable';
-import AICompareWidget from '@/components/AICompareWidget';
+import AIMessageWidget from '@/components/widgets/AIMessageWidget';
+import { TodoTable } from '@/components/widgets/TodoTable';
+import AICompareWidget from '@/components/widgets/AICompareWidget';
+import WeatherWidget from '@/components/widgets/WeatherWidget';
 
 // DashboardDndKit을 동적 import로 변경
 const DashboardDndKit = dynamic(() => import('@/components/DashboardDndKit'), {
@@ -17,6 +18,7 @@ export default function Home() {
       {/* <AIMessageWidget /> */}
       {/* <TodoTable /> */}
       {/* <AICompareWidget /> */}
+      {/* <WeatherWidget /> */}
     </div>
   );
 }

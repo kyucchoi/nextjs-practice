@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import ExchangeRateAxios from '@/components/ExchangeRateAxios';
-import ExchangeRateRQ from '@/components/ExchangeRateRQ';
-import AIMessageWidget from '@/components/AIMessageWidget';
-import AICompareWidget from '@/components/AICompareWidget';
-import { TodoTable } from '@/components/TodoTable';
+import ExchangeRateAxios from '@/components/widgets/ExchangeRateAxios';
+import ExchangeRateRQ from '@/components/widgets/ExchangeRateRQ';
+import AIMessageWidget from '@/components/widgets/AIMessageWidget';
+import AICompareWidget from '@/components/widgets/AICompareWidget';
+import { TodoTable } from '@/components/widgets/TodoTable';
 
 interface Widget {
   id: string;

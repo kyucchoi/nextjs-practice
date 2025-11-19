@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import {
   Select,
   SelectContent,
@@ -10,6 +9,7 @@ import {
 } from '@/components/ui/select';
 import { WidgetBox } from '@/components/ui/widget-box';
 import { useQuery } from '@tanstack/react-query';
+import { widgetDataStore } from '@/store/widgetDataStore';
 
 interface ExchangeRate {
   currency: string;
@@ -22,7 +22,7 @@ interface ExchangeRateResponse {
 }
 
 export default function ExchangeRateRQ() {
-  const [selectedCountry, setSelectedCountry] = useState('');
+  const { selectedCurrency, setSelectedCurrency } = widgetDataStore();
 
   const { data, isLoading, isError } = useQuery<ExchangeRateResponse>({
     queryKey: ['exchange-rates'],
@@ -49,17 +49,14 @@ export default function ExchangeRateRQ() {
   if (isError) return <p>에러 발생!</p>;
   if (!data) return <p>데이터가 없습니다.</p>;
 
-  const selectedRate = data.rates.find((r) => r.currency === selectedCountry);
+  const selectedRate = data.rates.find((r) => r.currency === selectedCurrency);
 
   return (
     <div>
       <WidgetBox className="p-8">
         <div>React-Query</div>
 
-        <Select
-          onValueChange={setSelectedCountry}
-          defaultValue={selectedCountry}
-        >
+        <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="나라를 선택해주세요" />
           </SelectTrigger>
@@ -72,10 +69,9 @@ export default function ExchangeRateRQ() {
           </SelectContent>
         </Select>
 
-        {selectedCountry && selectedRate && (
+        {selectedCurrency && selectedRate && (
           <>
-            {/* <h4>{selectedCountry}</h4> */}
-            <p>1 {selectedCountry} =</p>
+            <p>1 {selectedCurrency} =</p>
             <h2>{selectedRate.rate} KRW</h2>
           </>
         )}
