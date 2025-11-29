@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Select,
   SelectContent,
@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { WidgetBox } from '@/components/ui/widget-box';
-import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 interface ExchangeRate {
@@ -22,25 +22,20 @@ interface ExchangeRateResponse {
   executionTimeMs: number;
 }
 
-export default function ExchangeRateAxios() {
+export default function ExchangeRateFRQ() {
   // localStorage에서 초기값 가져오기
   const [selectedCurrency, setSelectedCurrency] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('selectedCurrencyAxios') || '';
+      return localStorage.getItem('selectedCurrencyFRQ') || '';
     }
     return '';
   });
-  const [data, setData] = useState<ExchangeRateResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
 
-  useEffect(() => {
-    const fetchExchangeRates = async () => {
+  const { data, isLoading, isError } = useQuery<ExchangeRateResponse>({
+    queryKey: ['exchange-rates'],
+    queryFn: async () => {
       try {
-        setIsLoading(true);
-        setIsError(false);
-
-        const response = await axios.get(
+        const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/v1/exchange/rate/all/async`,
           {
             headers: {
@@ -48,10 +43,14 @@ export default function ExchangeRateAxios() {
             },
           }
         );
-        setData(response.data);
+        if (response.status === 403) {
+          throw new Error('인증이 만료되었습니다. 토큰을 갱신해주세요.');
+        }
+        if (!response.ok) {
+          throw new Error('환율 데이터를 가져오는데 실패했습니다');
+        }
+        return response.json();
       } catch (error) {
-        console.error('환율 데이터 가져오기 실패:', error);
-        setIsError(true);
         toast('환율 정보를 불러오는데 실패했습니다.', {
           icon: (
             <i
@@ -65,18 +64,15 @@ export default function ExchangeRateAxios() {
             border: '1px solid var(--red)',
           },
         });
-      } finally {
-        setIsLoading(false);
+        throw error;
       }
-    };
-
-    fetchExchangeRates();
-  }, []);
+    },
+  });
 
   // 통화 선택 변경 시 localStorage에 저장
   const handleCurrencyChange = (value: string) => {
     setSelectedCurrency(value);
-    localStorage.setItem('selectedCurrencyAxios', value);
+    localStorage.setItem('selectedCurrencyFRQ', value);
   };
 
   if (isLoading) return <WidgetBox>로딩 중...</WidgetBox>;
@@ -87,7 +83,7 @@ export default function ExchangeRateAxios() {
 
   return (
     <WidgetBox className="p-8">
-      <div>axios</div>
+      <div>fetch + react-query</div>
 
       <Select value={selectedCurrency} onValueChange={handleCurrencyChange}>
         <SelectTrigger className="w-[180px]">

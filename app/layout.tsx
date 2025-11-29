@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import Providers from './providers';
+import { Toaster } from 'sonner';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
@@ -32,6 +33,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-muted`}
       >
         <Providers>{children}</Providers>
+        <Toaster position="top-center" />
       </body>
     </html>
   );

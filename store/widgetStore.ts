@@ -1,10 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import ExchangeRateAxios from '@/components/widgets/ExchangeRateAxios';
-import ExchangeRateRQ from '@/components/widgets/ExchangeRateRQ';
-import AIMessageWidget from '@/components/widgets/AIMessageWidget';
-import AICompareWidget from '@/components/widgets/AICompareWidget';
+import ExchangeRateGraphQL from '@/components/widgets/ExchangeRateGraphQL';
 import { TodoTable } from '@/components/widgets/TodoTable';
+import WeatherWidget from '@/components/widgets/WeatherWidget';
 
 interface Widget {
   id: string;
@@ -21,12 +19,17 @@ interface WidgetStore {
 
 // 사용 가능한 위젯 목록
 export const AVAILABLE_WIDGETS = [
-  { id: 'axios', name: '환율 (Axios)', component: ExchangeRateAxios },
-  { id: 'rq', name: '환율 (React Query)', component: ExchangeRateRQ },
-  { id: 'ai-message', name: 'AI 메시지', component: AIMessageWidget },
-  { id: 'ai-compare', name: 'AI 비교', component: AICompareWidget },
+  { id: 'exchange-rate', name: '환율', component: ExchangeRateGraphQL },
+  { id: 'weather', name: '날씨', component: WeatherWidget },
   { id: 'todo', name: 'Todo', component: TodoTable },
 ];
+
+// 위젯별 localStorage 키 매핑
+const WIDGET_STORAGE_KEYS: Record<string, string[]> = {
+  'exchange-rate': ['selectedCurrency'],
+  weather: ['selectedCity'],
+  todo: [],
+};
 
 const getComponentById = (id: string) => {
   return AVAILABLE_WIDGETS.find((w) => w.id === id)?.component;
@@ -53,11 +56,21 @@ export const widgetStore = create<WidgetStore>()(
           return state;
         }),
 
-      // 위젯 제거
+      // 위젯 제거 (localStorage도 함께 삭제)
       removeWidget: (widgetId) =>
-        set((state) => ({
-          widgets: state.widgets.filter((w) => w.id !== widgetId),
-        })),
+        set((state) => {
+          // localStorage 삭제
+          const storageKeys = WIDGET_STORAGE_KEYS[widgetId] || [];
+          if (typeof window !== 'undefined') {
+            storageKeys.forEach((key) => {
+              localStorage.removeItem(key);
+            });
+          }
+
+          return {
+            widgets: state.widgets.filter((w) => w.id !== widgetId),
+          };
+        }),
 
       // 위젯 순서 변경
       reorderWidgets: (startIndex, endIndex) =>

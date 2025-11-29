@@ -9,7 +9,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { WidgetBox } from '@/components/ui/widget-box';
-import axios from 'axios';
 import { toast } from 'sonner';
 
 interface ExchangeRate {
@@ -22,11 +21,11 @@ interface ExchangeRateResponse {
   executionTimeMs: number;
 }
 
-export default function ExchangeRateAxios() {
+export default function ExchangeRateFetch() {
   // localStorage에서 초기값 가져오기
   const [selectedCurrency, setSelectedCurrency] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('selectedCurrencyAxios') || '';
+      return localStorage.getItem('selectedCurrencyFetch') || '';
     }
     return '';
   });
@@ -40,7 +39,7 @@ export default function ExchangeRateAxios() {
         setIsLoading(true);
         setIsError(false);
 
-        const response = await axios.get(
+        const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/v1/exchange/rate/all/async`,
           {
             headers: {
@@ -48,7 +47,16 @@ export default function ExchangeRateAxios() {
             },
           }
         );
-        setData(response.data);
+
+        if (response.status === 403) {
+          throw new Error('인증이 만료되었습니다. 토큰을 갱신해주세요.');
+        }
+        if (!response.ok) {
+          throw new Error('환율 데이터를 가져오는데 실패했습니다');
+        }
+
+        const result = await response.json();
+        setData(result);
       } catch (error) {
         console.error('환율 데이터 가져오기 실패:', error);
         setIsError(true);
@@ -76,7 +84,7 @@ export default function ExchangeRateAxios() {
   // 통화 선택 변경 시 localStorage에 저장
   const handleCurrencyChange = (value: string) => {
     setSelectedCurrency(value);
-    localStorage.setItem('selectedCurrencyAxios', value);
+    localStorage.setItem('selectedCurrencyFetch', value);
   };
 
   if (isLoading) return <WidgetBox>로딩 중...</WidgetBox>;
@@ -87,7 +95,7 @@ export default function ExchangeRateAxios() {
 
   return (
     <WidgetBox className="p-8">
-      <div>axios</div>
+      <div>fetch</div>
 
       <Select value={selectedCurrency} onValueChange={handleCurrencyChange}>
         <SelectTrigger className="w-[180px]">
