@@ -138,9 +138,12 @@ body {
 .kakao-login {
   background-color: #fee500;
   color: #000000;
-  font-weight: 500;
+  font-weight: 600;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  transition: all 0.2s;
 }
 
 .kakao-login:hover {
   background-color: #fdd835;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
 }

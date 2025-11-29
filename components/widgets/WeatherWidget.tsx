@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
+import Image from 'next/image';
 
 // 날씨 API 응답 데이터 타입 정의
 interface WeatherData {
@@ -177,10 +178,12 @@ export default function WeatherWidget() {
 
           {/* 날씨 아이콘 + 온도 + 상태 */}
           <div className="flex justify-center items-center gap-4">
-            <img
+            <Image
               src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
               alt={weather.weather[0].description}
-              className="w-20 h-20"
+              width={80}
+              height={80}
+              unoptimized
             />
             <div>
               <div className="text-xl font-bold">{weather.main.temp}°C</div>
