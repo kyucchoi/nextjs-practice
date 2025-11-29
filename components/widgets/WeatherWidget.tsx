@@ -184,6 +184,7 @@ export default function WeatherWidget() {
               width={80}
               height={80}
               unoptimized
+              priority
             />
             <div>
               <div className="text-xl font-bold">{weather.main.temp}°C</div>

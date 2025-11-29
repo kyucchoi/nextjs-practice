@@ -17,7 +17,7 @@ export default function LoginPage() {
           alt="MyWidZ Logo"
           width={100}
           height={100}
-          className="mx-auto mb-4 drop-shadow-lg hover:scale-105 transition-transform duration-300"
+          className="mx-auto mb-4 rounded-3xl drop-shadow-lg hover:scale-105 transition-transform duration-300"
           priority
         />
 

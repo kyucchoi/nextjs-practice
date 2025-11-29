@@ -133,6 +133,7 @@
 html,
 body {
   overscroll-behavior: none;
+  @apply bg-white text-foreground;
 }
 
 .kakao-login {
