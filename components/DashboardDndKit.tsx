@@ -34,11 +34,6 @@ interface SortableItemProps {
   isDragging: boolean;
 }
 
-/**
- * 드래그 가능한 위젯 아이템 컴포넌트
- * - 상단 회색 영역을 드래그하면 순서 변경 가능
- * - 위젯 내용은 정상적으로 클릭/입력 가능
- */
 function SortableItem({
   id,
   component: Component,
@@ -76,12 +71,6 @@ function SortableItem({
   );
 }
 
-/**
- * 위젯 드래그 정렬 대시보드
- * - 위젯 추가/삭제 기능
- * - 드래그 앤 드롭으로 순서 변경
- * - Zustand로 상태 관리 및 persist로 새로고침 시에도 유지
- */
 export default function DashboardDndKit() {
   const { widgets, addWidget, removeWidget, setWidgets } = widgetStore();
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -89,18 +78,10 @@ export default function DashboardDndKit() {
   // 마우스 및 터치 센서 설정
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
-  /**
-   * 드래그 시작 이벤트
-   * - 현재 드래그 중인 위젯 ID 저장 (투명도 변경용)
-   */
   const handleDragStart = (event: DragEndEvent) => {
     setActiveId(event.active.id as string);
   };
 
-  /**
-   * 드래그 종료 이벤트
-   * - 위젯 순서 변경 및 Zustand 스토어 업데이트
-   */
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -197,8 +178,8 @@ export default function DashboardDndKit() {
 
       {/* 위젯이 없을 때 안내 메시지 */}
       {widgets.length === 0 ? (
-        <div className="flex items-center justify-center min-h-[400px] text-center">
-          <div className="text-muted-foreground">
+        <div className="flex items-center justify-center h-[calc(100vh-300px)]">
+          <div className="text-center text-muted-foreground">
             <p className="text-lg">위젯을 추가해보세요!</p>
             <p className="text-sm mt-2">
               우측 상단의 &quot;위젯 추가&quot; 버튼을 눌러보세요!

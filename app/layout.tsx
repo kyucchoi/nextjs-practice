@@ -25,8 +25,8 @@ export const metadata: Metadata = {
   description: '내가 원하는 위젯을 추가해보세요!',
   manifest: '/manifest.json',
   icons: {
-    icon: '/public/favicon.ico',
-    apple: '/public/icon.png',
+    icon: '/favicon.ico',
+    apple: '/icon.png',
   },
   openGraph: {
     title: 'MyWidZ',
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/public/opengraph-image.png',
+        url: '/opengraph-image.png',
         width: 1200,
         height: 630,
         alt: 'MyWidZ',
