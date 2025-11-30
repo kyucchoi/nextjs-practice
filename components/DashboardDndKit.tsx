@@ -169,7 +169,7 @@ export default function DashboardDndKit() {
   const activeWidgetIds = widgets.map((w) => w.id);
 
   return (
-    <div>
+    <div className="py-5">
       {/* 위젯 추가 버튼 */}
       <div className="mb-4 flex justify-end">
         <DropdownMenu>

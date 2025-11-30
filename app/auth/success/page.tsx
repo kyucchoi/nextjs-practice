@@ -11,9 +11,9 @@ export default function AuthSuccess() {
   }, [router]);
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="text-center pt-90">
-        <div className="text-2xl font-semibold mb-2">로그인 성공!</div>
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="text-center">
+        <div className="text-xl font-semibold mb-2">로그인 성공!</div>
         <div className="text-gray-600">메인 페이지로 이동 중...</div>
       </div>
     </div>
