@@ -19,7 +19,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    process.env.NEXT_PUBLIC_APP_URL ||
+      'https://nextjs-practice-three-opal.vercel.app'
   ),
   title: 'MyWidZ',
   description: '내가 원하는 위젯을 추가해보세요!',
