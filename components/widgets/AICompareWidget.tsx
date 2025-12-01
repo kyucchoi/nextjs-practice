@@ -6,6 +6,8 @@ import { Textarea } from '../ui/textarea';
 import { Spinner } from '../ui/spinner';
 import { WidgetBox } from '../ui/widget-box';
 
+const isDev = process.env.NODE_ENV === 'development';
+
 interface Message {
   id: string;
   role: 'user' | 'ai';
@@ -54,11 +56,21 @@ export default function AICompareWidget() {
         process.env.NEXT_PUBLIC_API_URL
       }/api/ai/stream/compare?message=${encodeURIComponent(trimmedInput)}`;
 
+      const headers = new Headers();
+
+      // dev 에서만 임시 토큰 허용
+      if (isDev && process.env.NEXT_PUBLIC_AUTH_TOKEN) {
+        headers.set(
+          'Authorization',
+          `Bearer ${process.env.NEXT_PUBLIC_AUTH_TOKEN}`
+        );
+      }
+
       const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_AUTH_TOKEN}`,
-        },
+        headers,
+        credentials: 'include', // jwt 쿠키 포함
       });
+
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
 
