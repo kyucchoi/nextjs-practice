@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { Check, MoreHorizontal, ChevronDown, ArrowUpDown } from 'lucide-react';
 import { Toggle } from '@/components/ui/toggle';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -351,7 +350,7 @@ export function TodoTable() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">
-                항목 표시 <ChevronDown className="ml-2 h-4 w-4" />
+                항목 표시 <i className="fa-solid fa-chevron-down"></i>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -465,7 +464,7 @@ export function TodoTable() {
                     onClick={() => handleSort('createdAt')}
                   >
                     생성일
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    <i className="fa-solid fa-up-down"></i>
                   </Button>
                 </TableHead>
               )}
@@ -478,7 +477,7 @@ export function TodoTable() {
                     onClick={() => handleSort('completed')}
                   >
                     완료
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    <i className="fa-solid fa-up-down"></i>
                   </Button>
                 </TableHead>
               )}
@@ -529,7 +528,7 @@ export function TodoTable() {
                         variant="outline"
                         className="data-[state=on]:bg-green-50 data-[state=on]:text-green-600 data-[state=on]:border-green-600"
                       >
-                        <Check className="h-4 w-4" />
+                        <i className="fa-solid fa-check"></i>
                         {todo.completed ? '완료' : '미완료'}
                       </Toggle>
                     </TableCell>
@@ -541,7 +540,7 @@ export function TodoTable() {
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
                           <span className="sr-only">메뉴 열기</span>
-                          <MoreHorizontal className="h-4 w-4" />
+                          <i className="fa-solid fa-ellipsis"></i>{' '}
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">

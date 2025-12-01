@@ -1,7 +1,6 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
@@ -32,8 +31,7 @@ export default function Logout() {
   return (
     <header className="flex justify-end pt-4">
       <Button variant="outline" onClick={handleLogout}>
-        <LogOut className="h-4 w-4 mr-2" />
-        로그아웃
+        <i className="fa-solid fa-arrow-right-from-bracket"></i> 로그아웃
       </Button>
     </header>
   );

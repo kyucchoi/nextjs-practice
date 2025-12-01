@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import ExchangeRateGraphQL from '@/components/widgets/ExchangeRateGraphQL';
 import { TodoTable } from '@/components/widgets/TodoTable';
 import WeatherWidget from '@/components/widgets/WeatherWidget';
+import AICompareWidget from '@/components/widgets/AICompareWidget';
 
 interface Widget {
   id: string;
@@ -19,9 +20,10 @@ interface WidgetStore {
 
 // 사용 가능한 위젯 목록
 export const AVAILABLE_WIDGETS = [
-  { id: 'exchange-rate', name: '환율', component: ExchangeRateGraphQL },
-  { id: 'weather', name: '날씨', component: WeatherWidget },
+  { id: 'ai-chat', name: 'AI 채팅', component: AICompareWidget },
   { id: 'todo', name: 'Todo', component: TodoTable },
+  { id: 'weather', name: '날씨', component: WeatherWidget },
+  { id: 'exchange-rate', name: '환율', component: ExchangeRateGraphQL },
 ];
 
 // 위젯별 localStorage 키 매핑

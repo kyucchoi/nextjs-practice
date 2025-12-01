@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Spinner } from '@/components/ui/spinner';
 
-/* 백엔드에서 ?token=... 파라미터로 JWT 전달 useSearchParams 사용으로 Suspense 필요 */
+// 백엔드에서 ?token=... 파라미터로 JWT 전달 useSearchParams 사용으로 Suspense 필요
 function AuthSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -57,7 +57,7 @@ function AuthSuccessContent() {
   );
 }
 
-/* Suspense로 AuthSuccessContent를 감싸서 useSearchParams SSR 에러 방지 */
+// Suspense로 AuthSuccessContent를 감싸서 useSearchParams SSR 에러 방지
 export default function AuthSuccess() {
   return (
     <Suspense>

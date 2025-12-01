@@ -18,7 +18,6 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Button } from '@/components/ui/button';
-import { Plus, GripVertical } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -62,7 +61,7 @@ function SortableItem({
         {...attributes}
         {...listeners}
       >
-        <GripVertical className="h-5 w-5 text-gray-400" />
+        <i className="fa-solid fa-grip-vertical text-gray-400"></i>
       </div>
 
       {/* 실제 위젯 내용 - 드래그 리스너 없음, 자유롭게 클릭/입력 가능 */}
@@ -146,18 +145,45 @@ export default function DashboardDndKit() {
     }
   };
 
+  // 전체 위젯 삭제
+  const handleRemoveAll = () => {
+    if (widgets.length === 0) return;
+
+    setWidgets([]);
+    toast('모든 위젯이 삭제되었습니다!', {
+      icon: (
+        <i
+          className="fa-solid fa-trash"
+          style={{ color: 'var(--red)', fontSize: '20px' }}
+        ></i>
+      ),
+      style: {
+        background: 'var(--white)',
+        color: 'var(--black)',
+        border: '1px solid var(--red)',
+      },
+    });
+  };
+
   // 현재 추가된 위젯 ID 목록
   const activeWidgetIds = widgets.map((w) => w.id);
 
   return (
     <div className="py-5">
       {/* 위젯 추가 버튼 */}
-      <div className="mb-4 flex justify-end">
+      <div className="mb-4 flex justify-end gap-2">
+        {/* 전체 삭제 버튼 */}
+        {widgets.length > 0 && (
+          <Button variant="destructive" onClick={handleRemoveAll}>
+            <i className="fa-solid fa-trash"></i>
+            전체 삭제
+          </Button>
+        )}
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              위젯 추가
+              <i className="fa-solid fa-plus"></i> 위젯 추가
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

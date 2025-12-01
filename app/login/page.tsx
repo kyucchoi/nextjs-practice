@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
-/* useSearchParams 사용으로 Suspense 필요 */
+// useSearchParams 사용으로 Suspense 필요
 function LoginContent() {
   const searchParams = useSearchParams();
 
@@ -33,7 +33,7 @@ function LoginContent() {
     }
   }, [searchParams]);
 
-  /* 환경변수 체크 후 백엔드 카카오 OAuth 엔드포인트로 이동 */
+  // 환경변수 체크 후 백엔드 카카오 OAuth 엔드포인트로 이동
   const handleLogin = () => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -90,7 +90,7 @@ function LoginContent() {
   );
 }
 
-/* Suspense로 LoginContent를 감싸서 useSearchParams SSR 에러 방지 */
+// Suspense로 LoginContent를 감싸서 useSearchParams SSR 에러 방지
 export default function LoginPage() {
   return (
     <Suspense>
