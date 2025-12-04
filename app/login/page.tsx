@@ -3,18 +3,44 @@
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { toast } from 'sonner';
-import { useEffect, Suspense } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+
+// BeforeInstallPromptEvent 타입 정의
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{
+    outcome: 'accepted' | 'dismissed';
+    platform: string;
+  }>;
+}
 
 // useSearchParams 사용으로 Suspense 필요
 function LoginContent() {
   const searchParams = useSearchParams();
+  const [deferredPrompt, setDeferredPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null);
+  const [showInstallButton, setShowInstallButton] = useState(false);
+
+  // PWA 설치 프롬프트 이벤트 캐치
+  useEffect(() => {
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
+      setShowInstallButton(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handler);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler);
+    };
+  }, []);
 
   // 로그인 실패 시 에러 메시지 표시
   useEffect(() => {
     const error = searchParams.get('error');
 
-    // 백엔드에서 ?error=kakao_failed로 리다이렉트 시 에러 표시
     if (error === 'kakao_failed') {
       toast('카카오 로그인에 실패했습니다.', {
         description: '다시 시도해주세요.',
@@ -33,11 +59,10 @@ function LoginContent() {
     }
   }, [searchParams]);
 
-  // 환경변수 체크 후 백엔드 카카오 OAuth 엔드포인트로 이동
+  // 카카오 로그인
   const handleLogin = () => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-    // 환경변수 미설정 시 에러 표시
     if (!API_URL) {
       console.error('NEXT_PUBLIC_API_URL is not set');
       toast('로그인 서버 주소가 설정되지 않았습니다.', {
@@ -57,8 +82,38 @@ function LoginContent() {
       return;
     }
 
-    // 백엔드 카카오 OAuth 엔드포인트로 리다이렉트
     window.location.href = `${API_URL}/api/auth/kakao`;
+  };
+
+  // PWA 설치 핸들러
+  const handleInstallPWA = async () => {
+    if (!deferredPrompt) return;
+
+    // 설치 프롬프트 표시
+    await deferredPrompt.prompt();
+
+    // 사용자 선택 결과 대기
+    const { outcome } = await deferredPrompt.userChoice;
+
+    if (outcome === 'accepted') {
+      toast('앱이 설치되었습니다!', {
+        icon: (
+          <i
+            className="fa-solid fa-check"
+            style={{ color: 'var(--green)', fontSize: '20px' }}
+          ></i>
+        ),
+        style: {
+          background: 'var(--white)',
+          color: 'var(--black)',
+          border: '1px solid var(--green)',
+        },
+      });
+    }
+
+    // 프롬프트는 한 번만 사용 가능
+    setDeferredPrompt(null);
+    setShowInstallButton(false);
   };
 
   return (
@@ -80,12 +135,23 @@ function LoginContent() {
 
       {/* 카카오 로그인 버튼 */}
       <Button
-        className="w-full max-w-xs kakao-login h-12 flex items-center justify-center gap-3"
+        className="w-full max-w-xs kakao-login h-12 flex items-center justify-center gap-3 mb-3"
         onClick={handleLogin}
       >
-        <i className="fa-brands fa-kakao-talk text-xl"></i>
+        <i className="fa-brands fa-kakao-talk text-lg"></i>
         <span>카카오톡 로그인</span>
       </Button>
+
+      {/* PWA 설치 버튼 (설치 가능할 때만 표시) */}
+      {showInstallButton && (
+        <Button
+          className="w-full max-w-xs pwa-install h-12 flex items-center justify-center gap-3"
+          onClick={handleInstallPWA}
+        >
+          <i className="fa-solid fa-download text-lg"></i>
+          <span>앱처럼 사용해 보세요</span>
+        </Button>
+      )}
     </div>
   );
 }

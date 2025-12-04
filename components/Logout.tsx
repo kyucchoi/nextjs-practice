@@ -29,7 +29,7 @@ export default function Logout() {
   };
 
   return (
-    <header className="flex justify-end pt-4">
+    <header className="flex justify-end pt-6">
       <Button variant="outline" onClick={handleLogout}>
         <i className="fa-solid fa-arrow-right-from-bracket"></i> 로그아웃
       </Button>
