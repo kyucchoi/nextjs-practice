@@ -28,11 +28,38 @@ const getOptions = (init?: RequestInit): RequestInit => {
   };
 };
 
-// TODO 목록 조회
+// // TODO 목록 조회
+// export async function getTodos(): Promise<Todo[]> {
+//   const res = await fetch(`${BASE_URL}/api/v1/todo`, getOptions());
+//   if (!res.ok) throw new Error('Failed to fetch todos');
+//   return res.json();
+// }
+
+// TODO 목록 조회 (GraphQL)
 export async function getTodos(): Promise<Todo[]> {
-  const res = await fetch(`${BASE_URL}/api/v1/todo`, getOptions());
+  const GRAPHQL_QUERY = `
+    query GetAllTodos {
+      getAllTodos {
+        id
+        task
+        completed
+        createdAt
+      }
+    }
+  `;
+
+  const res = await fetch(
+    `${BASE_URL}/graphql`,
+    getOptions({
+      method: 'POST',
+      body: JSON.stringify({ query: GRAPHQL_QUERY }),
+    })
+  );
+
   if (!res.ok) throw new Error('Failed to fetch todos');
-  return res.json();
+
+  const result = await res.json();
+  return result.data.getAllTodos;
 }
 
 // TODO 생성
