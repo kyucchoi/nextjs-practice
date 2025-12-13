@@ -2,23 +2,25 @@
 
 import Logout from '@/components/Logout';
 import dynamic from 'next/dynamic';
-import { Skeleton } from '@/components/ui/skeleton';
+import SkeletonLoading from '@/components/loading/SkeletonLoading';
+import SpinnerLoading from '@/components/loading/SpinnerLoading';
+import { useABTest } from '@/lib/hooks/useABTest';
 
 const DashboardDndKit = dynamic(() => import('@/components/DashboardDndKit'), {
   ssr: false,
-  loading: () => (
-    <div className="space-y-4 py-5">
-      {/* 위젯 추가 버튼 스켈레톤 */}
-      <div className="flex justify-end">
-        <Skeleton className="h-10 w-32" />
-      </div>
-
-      {/* 위젯 스켈레톤 2개 */}
-      <Skeleton className="h-60 w-full rounded-lg" />
-      <Skeleton className="h-60 w-full rounded-lg" />
-    </div>
-  ),
+  loading: () => <LoadingVariant />,
 });
+
+function LoadingVariant() {
+  const variant = useABTest({
+    testName: 'loading-screen',
+    variants: ['spinner', 'skeleton'],
+  });
+
+  if (!variant) return null;
+
+  return variant === 'spinner' ? <SpinnerLoading /> : <SkeletonLoading />;
+}
 
 export default function Home() {
   return (
