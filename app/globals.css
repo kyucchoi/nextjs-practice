@@ -132,6 +132,7 @@
 
 html,
 body {
+  height: 100vh;
   overscroll-behavior: none;
   @apply bg-white text-foreground;
 }
