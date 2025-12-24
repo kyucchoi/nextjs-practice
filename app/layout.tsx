@@ -6,6 +6,7 @@ import Providers from './providers';
 import { Toaster } from 'sonner';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -63,6 +64,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-muted`}
       >
+        <GoogleAnalytics
+          gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ''}
+        />
         <Providers>{children}</Providers>
         <Toaster position="top-center" />
       </body>
