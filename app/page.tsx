@@ -5,6 +5,8 @@ import dynamic from 'next/dynamic';
 import SkeletonLoading from '@/components/ui/loading/SkeletonLoading';
 import SpinnerLoading from '@/components/ui/loading/SpinnerLoading';
 import { useABTest } from '@/lib/hooks/useABTest';
+import VoteBanner from '@/components/VoteBanner';
+import { useEffect } from 'react';
 
 const DashboardDndKit = dynamic(() => import('@/components/DashboardDndKit'), {
   ssr: false,
@@ -23,9 +25,20 @@ function LoadingVariant() {
 }
 
 export default function Home() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+    });
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <div className="mx-5">
+    <div className="py-5">
       <Logout />
+      <VoteBanner />
       <DashboardDndKit />
     </div>
   );

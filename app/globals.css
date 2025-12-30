@@ -77,14 +77,29 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  /* toast 색깔 */
-  --white: #ffffff;
-  --black: #000000;
-  --green: #22c55e;
-  --red: #ef4444;
-  --blue: #3b82f6;
-  --orange: #f59e0b;
-  --purple: #8b5cf6;
+  /* 기본 색상 */
+  --css-white: #ffffff;
+  --css-black: #000000;
+  --css-green: #22c55e;
+  --css-red: #ef4444;
+  --css-blue: #3b82f6;
+  --css-orange: #f59e0b;
+  --css-purple: #8b5cf6;
+
+  /* 효밤 투표/게시판 색깔 */
+  --hyobam-primary: #f97316;
+  --hyobam-primary-hover: #ea580c;
+  --hyobam-border: #fed7aa;
+  --hyobam-bg: #fff7ed;
+  --hyobam-text: #ea580c;
+
+  /* 배지 색상 (1등, 2등, 3등) */
+  --badge-gold-start: #f97316;
+  --badge-gold-end: #dc2626;
+  --badge-silver-start: #9ca3af;
+  --badge-silver-end: #6b7280;
+  --badge-bronze-start: #d97706;
+  --badge-bronze-end: #92400e;
 }
 
 .dark {

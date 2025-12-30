@@ -16,13 +16,13 @@ export default function Logout() {
         icon: (
           <i
             className="fa-solid fa-check"
-            style={{ color: 'var(--green)', fontSize: '20px' }}
+            style={{ color: 'var(--css-green)', fontSize: '20px' }}
           ></i>
         ),
         style: {
-          background: 'var(--white)',
-          color: 'var(--black)',
-          border: '1px solid var(--green)',
+          background: 'var(--css-white)',
+          color: 'var(--css-black)',
+          border: '1px solid var(--css-green)',
         },
       });
 
@@ -33,20 +33,20 @@ export default function Logout() {
         icon: (
           <i
             className="fa-solid fa-xmark"
-            style={{ color: 'var(--red)', fontSize: '20px' }}
+            style={{ color: 'var(--css-red)', fontSize: '20px' }}
           ></i>
         ),
         style: {
-          background: 'var(--white)',
-          color: 'var(--black)',
-          border: '1px solid var(--red)',
+          background: 'var(--css-white)',
+          color: 'var(--css-black)',
+          border: '1px solid var(--css-red)',
         },
       });
     }
   };
 
   return (
-    <header className="flex justify-end pt-5">
+    <header className="flex justify-end">
       <Button variant="outline" onClick={handleLogout}>
         <i className="fa-solid fa-arrow-right-from-bracket"></i> 로그아웃
       </Button>

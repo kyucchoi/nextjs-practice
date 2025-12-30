@@ -26,13 +26,13 @@ function AuthSuccessContent() {
             icon: (
               <i
                 className="fa-solid fa-xmark"
-                style={{ color: 'var(--red)', fontSize: '20px' }}
+                style={{ color: 'var(--css-red)', fontSize: '20px' }}
               ></i>
             ),
             style: {
-              background: 'var(--white)',
-              color: 'var(--black)',
-              border: '1px solid var(--red)',
+              background: 'var(--css-white)',
+              color: 'var(--css-black)',
+              border: '1px solid var(--css-red)',
             },
           });
           router.push('/login');
@@ -42,13 +42,13 @@ function AuthSuccessContent() {
           icon: (
             <i
               className="fa-solid fa-xmark"
-              style={{ color: 'var(--red)', fontSize: '20px' }}
+              style={{ color: 'var(--css-red)', fontSize: '20px' }}
             ></i>
           ),
           style: {
-            background: 'var(--white)',
-            color: 'var(--black)',
-            border: '1px solid var(--red)',
+            background: 'var(--css-white)',
+            color: 'var(--css-black)',
+            border: '1px solid var(--css-red)',
           },
         });
         router.push('/login');

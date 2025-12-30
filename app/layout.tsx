@@ -68,7 +68,9 @@ export default function RootLayout({
           gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ''}
         />
         <div className="max-w-md mx-auto bg-white md:shadow-lg min-h-screen">
-          <Providers>{children}</Providers>
+          <div className="px-5">
+            <Providers>{children}</Providers>
+          </div>
         </div>
         <Toaster position="top-center" />
       </body>

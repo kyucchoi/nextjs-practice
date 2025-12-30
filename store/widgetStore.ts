@@ -18,7 +18,6 @@ interface WidgetStore {
   reorderWidgets: (startIndex: number, endIndex: number) => void;
 }
 
-// 사용 가능한 위젯 목록
 export const AVAILABLE_WIDGETS = [
   { id: 'ai-chat', name: 'AI 채팅', component: AICompareWidget },
   { id: 'todo', name: 'Todo', component: TodoTable },
@@ -26,7 +25,6 @@ export const AVAILABLE_WIDGETS = [
   { id: 'exchange-rate', name: '환율', component: ExchangeRateGraphQL },
 ];
 
-// 위젯별 localStorage 키 매핑
 const WIDGET_STORAGE_KEYS: Record<string, string[]> = {
   'exchange-rate': ['selectedCurrency'],
   weather: ['selectedCity'],
@@ -40,13 +38,10 @@ const getComponentById = (id: string) => {
 export const widgetStore = create<WidgetStore>()(
   persist(
     (set) => ({
-      // 초기 위젯 없음
       widgets: [],
 
-      // 위젯 목록 설정
       setWidgets: (widgets) => set({ widgets }),
 
-      // 위젯 추가
       addWidget: (widgetId) =>
         set((state) => {
           const component = getComponentById(widgetId);
@@ -61,7 +56,6 @@ export const widgetStore = create<WidgetStore>()(
       // 위젯 제거 (localStorage도 함께 삭제)
       removeWidget: (widgetId) =>
         set((state) => {
-          // localStorage 삭제
           const storageKeys = WIDGET_STORAGE_KEYS[widgetId] || [];
           if (typeof window !== 'undefined') {
             storageKeys.forEach((key) => {
@@ -74,7 +68,6 @@ export const widgetStore = create<WidgetStore>()(
           };
         }),
 
-      // 위젯 순서 변경
       reorderWidgets: (startIndex, endIndex) =>
         set((state) => {
           const result = Array.from(state.widgets);
@@ -90,10 +83,12 @@ export const widgetStore = create<WidgetStore>()(
       }),
       onRehydrateStorage: () => (state) => {
         if (state) {
-          state.widgets = state.widgets.map((w: any) => ({
-            id: w.id,
-            component: getComponentById(w.id)!,
-          }));
+          state.widgets = state.widgets
+            .map((w: { id: string }) => {
+              const component = getComponentById(w.id);
+              return component ? { id: w.id, component } : null;
+            })
+            .filter((w) => w !== null) as Widget[];
         }
       },
     }

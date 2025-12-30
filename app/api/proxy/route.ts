@@ -72,7 +72,12 @@ async function handleProxyRequest(request: NextRequest, method: string) {
       headers: responseHeaders,
     });
   } catch (error) {
-    console.error('Proxy API error:', error);
-    return new Response('Internal server error', { status: 500 });
+    if (isDev) {
+      console.error('Proxy API error:', error);
+    }
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }

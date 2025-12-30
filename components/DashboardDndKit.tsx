@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -57,11 +57,12 @@ function SortableItem({
     >
       {/* 드래그 핸들 영역 - 이 영역을 잡아서 드래그 */}
       <div
-        className="flex items-center bg-gray-100 p-2 rounded-t-lg hover:bg-gray-200 cursor-move"
+        className="flex items-center justify-between bg-gray-100 p-2 rounded-t-lg hover:bg-gray-200 cursor-move"
         {...attributes}
         {...listeners}
       >
         <i className="fa-solid fa-grip-vertical text-gray-400"></i>
+        <span className="text-xs text-gray-500">드래그 해보세요!</span>
       </div>
 
       {/* 실제 위젯 내용 - 드래그 리스너 없음, 자유롭게 클릭/입력 가능 */}
@@ -75,6 +76,10 @@ export default function DashboardDndKit() {
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [widgets.length]);
 
   const handleDragStart = (event: DragEndEvent) => {
     setActiveId(event.active.id as string);
@@ -110,13 +115,13 @@ export default function DashboardDndKit() {
         icon: (
           <i
             className="fa-solid fa-check"
-            style={{ color: 'var(--green)', fontSize: '20px' }}
+            style={{ color: 'var(--css-green)', fontSize: '20px' }}
           ></i>
         ),
         style: {
-          background: 'var(--white)',
-          color: 'var(--black)',
-          border: '1px solid var(--green)',
+          background: 'var(--css-white)',
+          color: 'var(--css-black)',
+          border: '1px solid var(--css-green)',
         },
       });
     } else {
@@ -125,13 +130,13 @@ export default function DashboardDndKit() {
         icon: (
           <i
             className="fa-solid fa-trash"
-            style={{ color: 'var(--red)', fontSize: '20px' }}
+            style={{ color: 'var(--css-red)', fontSize: '20px' }}
           ></i>
         ),
         style: {
-          background: 'var(--white)',
-          color: 'var(--black)',
-          border: '1px solid var(--red)',
+          background: 'var(--css-white)',
+          color: 'var(--css-black)',
+          border: '1px solid var(--css-red)',
         },
       });
     }
@@ -145,13 +150,13 @@ export default function DashboardDndKit() {
       icon: (
         <i
           className="fa-solid fa-trash"
-          style={{ color: 'var(--red)', fontSize: '20px' }}
+          style={{ color: 'var(--css-red)', fontSize: '20px' }}
         ></i>
       ),
       style: {
-        background: 'var(--white)',
-        color: 'var(--black)',
-        border: '1px solid var(--red)',
+        background: 'var(--css-white)',
+        color: 'var(--css-black)',
+        border: '1px solid var(--css-red)',
       },
     });
   };
@@ -159,7 +164,7 @@ export default function DashboardDndKit() {
   const activeWidgetIds = widgets.map((w) => w.id);
 
   return (
-    <div className="py-5">
+    <div className="mt-5">
       <div className="mb-4 flex justify-end gap-2">
         {widgets.length > 0 && (
           <Button variant="destructive" onClick={handleRemoveAll}>
@@ -193,7 +198,7 @@ export default function DashboardDndKit() {
       </div>
 
       {widgets.length === 0 ? (
-        <div className="flex items-center justify-center h-[calc(100vh-300px)]">
+        <div className="flex items-center justify-center h-[calc(100vh-400px)]">
           <div className="text-center text-muted-foreground">
             <p className="text-lg">위젯을 추가해보세요!</p>
             <p className="text-sm mt-2">

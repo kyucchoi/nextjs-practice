@@ -40,24 +40,17 @@ export function useABTest({ testName, variants }: ABTestOptions) {
 
 async function sendAnalytics(type: string, stayTime: number) {
   try {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    if (!API_URL) return;
-
-    const url = `${API_URL}/api/v1/analytics/ui-test`;
+    const url = `/api/proxy?path=/api/v1/analytics/ui-test`;
     const body = JSON.stringify({ type, stayTime });
-    const headers = { 'Content-Type': 'application/json' };
 
-    if (navigator.sendBeacon) {
-      navigator.sendBeacon(url, new Blob([body], { type: 'application/json' }));
-    } else {
-      await fetch(url, {
-        method: 'POST',
-        headers,
-        credentials: 'include',
-        body,
-        keepalive: true,
-      });
-    }
+    await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body,
+      keepalive: true,
+    });
   } catch (error) {
     console.error('Failed to send analytics:', error);
   }
