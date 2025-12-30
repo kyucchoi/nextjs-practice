@@ -7,10 +7,6 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = React.useState(() => new QueryClient());
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <div className="max-w-md mx-auto bg-white md:shadow-lg min-h-screen">
-        {children}
-      </div>
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 }

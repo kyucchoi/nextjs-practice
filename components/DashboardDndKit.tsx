@@ -74,7 +74,6 @@ export default function DashboardDndKit() {
   const { widgets, addWidget, removeWidget, setWidgets } = widgetStore();
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  // 마우스 및 터치 센서 설정
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   const handleDragStart = (event: DragEndEvent) => {
@@ -84,34 +83,28 @@ export default function DashboardDndKit() {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    // 드롭 영역이 없거나 같은 위치면 종료
     if (!over || active.id === over.id) {
       setActiveId(null);
       return;
     }
 
-    // 이전/새로운 인덱스 찾기
     const oldIndex = widgets.findIndex((item) => item.id === active.id);
     const newIndex = widgets.findIndex((item) => item.id === over.id);
 
-    // 인덱스가 유효하지 않으면 종료
     if (oldIndex === -1 || newIndex === -1) {
       setActiveId(null);
       return;
     }
 
-    // arrayMove로 순서 변경 후 Zustand 업데이트
     setWidgets(arrayMove(widgets, oldIndex, newIndex));
     setActiveId(null);
   };
 
   const handleToggleWidget = (widgetId: string, checked: boolean) => {
-    // 위젯 이름 가져오기
     const widgetName =
       AVAILABLE_WIDGETS.find((w) => w.id === widgetId)?.name || '위젯';
 
     if (checked) {
-      // 위젯 추가
       addWidget(widgetId);
       toast(`${widgetName} 위젯이 추가되었습니다!`, {
         icon: (
@@ -127,7 +120,6 @@ export default function DashboardDndKit() {
         },
       });
     } else {
-      // 위젯 삭제
       removeWidget(widgetId);
       toast(`${widgetName} 위젯이 삭제되었습니다!`, {
         icon: (
@@ -145,7 +137,6 @@ export default function DashboardDndKit() {
     }
   };
 
-  // 전체 위젯 삭제
   const handleRemoveAll = () => {
     if (widgets.length === 0) return;
 
@@ -165,14 +156,11 @@ export default function DashboardDndKit() {
     });
   };
 
-  // 현재 추가된 위젯 ID 목록
   const activeWidgetIds = widgets.map((w) => w.id);
 
   return (
     <div className="py-5">
-      {/* 위젯 추가 버튼 */}
       <div className="mb-4 flex justify-end gap-2">
-        {/* 전체 삭제 버튼 */}
         {widgets.length > 0 && (
           <Button variant="destructive" onClick={handleRemoveAll}>
             <i className="fa-solid fa-trash"></i>
@@ -191,9 +179,11 @@ export default function DashboardDndKit() {
               <DropdownMenuCheckboxItem
                 key={widget.id}
                 checked={activeWidgetIds.includes(widget.id)}
-                onCheckedChange={(checked) =>
-                  handleToggleWidget(widget.id, Boolean(checked))
-                }
+                onCheckedChange={(checked) => {
+                  if (typeof checked === 'boolean') {
+                    handleToggleWidget(widget.id, checked);
+                  }
+                }}
               >
                 {widget.name}
               </DropdownMenuCheckboxItem>
@@ -202,7 +192,6 @@ export default function DashboardDndKit() {
         </DropdownMenu>
       </div>
 
-      {/* 위젯이 없을 때 안내 메시지 */}
       {widgets.length === 0 ? (
         <div className="flex items-center justify-center h-[calc(100vh-300px)]">
           <div className="text-center text-muted-foreground">
@@ -213,20 +202,17 @@ export default function DashboardDndKit() {
           </div>
         </div>
       ) : (
-        // 드래그 앤 드롭 컨텍스트
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
-          {/* 정렬 가능한 컨텍스트 */}
           <SortableContext
             items={widgets.map((w) => w.id)}
             strategy={verticalListSortingStrategy}
           >
             <div className="space-y-4">
-              {/* 위젯 목록 렌더링 */}
               {widgets.map((widget) => (
                 <SortableItem
                   key={widget.id}

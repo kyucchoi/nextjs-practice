@@ -27,7 +27,6 @@ export default function ExchangeRateGraphQL() {
   const [isError, setIsError] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  // 환율 데이터 fetch 함수
   const fetchRates = useCallback(async () => {
     if (!selectedCurrency) return;
 
@@ -59,23 +58,19 @@ export default function ExchangeRateGraphQL() {
     }
   }, [selectedCurrency]);
 
-  // 통화 선택 시 데이터 fetch
   useEffect(() => {
     fetchRates();
   }, [fetchRates]);
 
-  // 새로고침 버튼 핸들러
   const handleRefresh = () => {
     fetchRates();
   };
 
-  // 통화 선택 변경 시 localStorage에 저장
   const handleCurrencyChange = (value: string) => {
     setSelectedCurrency(value);
     localStorage.setItem('selectedCurrency', value);
   };
 
-  // 업데이트 시간 포맷 (예: "2024.12.01 17:30")
   const formatUpdateTime = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -86,12 +81,10 @@ export default function ExchangeRateGraphQL() {
     return `${year}.${month}.${day} ${hours}:${minutes}`;
   };
 
-  // 선택된 통화의 환율 정보 찾기
   const selectedRate = rates.find((r) => r.currency === selectedCurrency);
 
   return (
     <WidgetBox>
-      {/* 헤더: 통화 선택 + 새로고침 버튼 */}
       <div className="flex justify-between items-center gap-2">
         <Select value={selectedCurrency} onValueChange={handleCurrencyChange}>
           <SelectTrigger className="w-[180px]">
@@ -106,7 +99,6 @@ export default function ExchangeRateGraphQL() {
           </SelectContent>
         </Select>
 
-        {/* 새로고침 버튼 */}
         <Button
           variant="ghost"
           size="sm"
@@ -118,20 +110,16 @@ export default function ExchangeRateGraphQL() {
         </Button>
       </div>
 
-      {/* 로딩 상태 */}
       {isLoading ? (
         <div className="flex items-center justify-center h-[167px]">
           <p className="text-gray-400 text-lg">로딩 중...</p>
         </div>
       ) : isError ? (
-        /* 에러 상태 */
         <div className="flex items-center justify-center h-[167px]">
           <p className="text-gray-400 text-sm">에러 발생!</p>
         </div>
       ) : selectedCurrency && selectedRate ? (
-        /* 환율 정보 표시 */
         <div className="bg-gradient-to-br from-gray-50 to-gray-200 rounded-lg p-6 border border-gray-100">
-          {/* 환율 메인 정보 */}
           <div className="text-center mb-4">
             <div className="text-sm text-gray-600 mb-2">
               1 {selectedCurrency}
@@ -144,10 +132,8 @@ export default function ExchangeRateGraphQL() {
             </div>
           </div>
 
-          {/* 구분선 */}
           <div className="border-t border-gray-200 my-4"></div>
 
-          {/* 마지막 업데이트 시간 */}
           {lastUpdated && (
             <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
               <i className="fa-regular fa-clock"></i>
@@ -156,7 +142,6 @@ export default function ExchangeRateGraphQL() {
           )}
         </div>
       ) : (
-        /* 초기 상태 (통화 미선택) */
         <div className="flex items-center justify-center h-[167px]">
           <p className="text-gray-400 text-lg">환율이 궁금하세요?</p>
         </div>

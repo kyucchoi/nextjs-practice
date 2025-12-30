@@ -43,9 +43,7 @@ import {
   type Todo,
 } from '@/lib/api/todo';
 
-// 정렬 필드 타입 정의
 type SortField = 'createdAt' | 'completed' | null;
-// 정렬 순서 타입 정의
 type SortOrder = 'asc' | 'desc';
 
 export function TodoTable() {
@@ -61,21 +59,18 @@ export function TodoTable() {
   const [sortOrder, setSortOrder] = React.useState<SortOrder>('desc');
   const [currentPage, setCurrentPage] = React.useState(1);
 
-  const itemsPerPage = 5; // 페이지당 표시 개수
+  const itemsPerPage = 5;
 
-  // 컬럼 표시 상태
   const [columnVisibility, setColumnVisibility] = React.useState({
     task: true,
     createdAt: true,
     completed: true,
   });
 
-  // 초기 데이터 로드
   React.useEffect(() => {
     fetchTodos();
   }, []);
 
-  // TODO 목록 조회
   const fetchTodos = async () => {
     try {
       setLoading(true);
@@ -101,7 +96,6 @@ export function TodoTable() {
     }
   };
 
-  // 날짜 포맷 변환 (ISO → 한국 날짜)
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('ko-KR', {
@@ -111,44 +105,34 @@ export function TodoTable() {
     });
   };
 
-  // 정렬 토글 함수
   const handleSort = (field: SortField) => {
-    // 같은 필드 클릭 시 정렬 순서만 변경 (오름차순 ↔ 내림차순)
     if (sortField === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
-      // 다른 필드 클릭 시 해당 필드로 변경하고 오름차순으로 시작
       setSortField(field);
       setSortOrder('asc');
     }
   };
 
-  // 필터링 및 정렬된 할 일 목록 (useMemo로 최적화)
   const filteredAndSortedTodos = React.useMemo(() => {
     let result = [...todos];
 
-    // 검색 필터링: 할 일 텍스트에 검색어 포함 여부
     if (searchTerm) {
       result = result.filter((todo) =>
         todo.task.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // 정렬 로직
     if (sortField) {
       result.sort((a, b) => {
-        // 생성일 기준 정렬
         if (sortField === 'createdAt') {
           const dateA = new Date(a.createdAt).getTime();
           const dateB = new Date(b.createdAt).getTime();
           return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
-        }
-        // 완료 상태 기준 정렬
-        else if (sortField === 'completed') {
+        } else if (sortField === 'completed') {
           const valueA = a.completed ? 1 : 0;
           const valueB = b.completed ? 1 : 0;
 
-          // 완료 상태가 같으면 날짜로 정렬 (최근순)
           if (valueA === valueB) {
             const dateA = new Date(a.createdAt).getTime();
             const dateB = new Date(b.createdAt).getTime();
@@ -164,23 +148,18 @@ export function TodoTable() {
     return result;
   }, [todos, searchTerm, sortField, sortOrder]);
 
-  // 페이지네이션 계산
   const totalPages = Math.ceil(filteredAndSortedTodos.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentTodos = filteredAndSortedTodos.slice(startIndex, endIndex);
 
-  // 검색어/정렬 변경 시 첫 페이지로 리셋
   React.useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, sortField, sortOrder]);
 
-  // 완료 상태 토글 (낙관적 업데이트)
   const handleToggleComplete = async (id: number, completed: boolean) => {
-    // 1. 이전 상태 백업 (실패 시 롤백용)
     const previousTodos = todos;
 
-    // 2. UI 먼저 업데이트 (낙관적 업데이트 - 서버 응답 기다리지 않음)
     setTodos(
       todos.map((todo) =>
         todo.id === id ? { ...todo, completed: !completed } : todo
@@ -188,16 +167,12 @@ export function TodoTable() {
     );
 
     try {
-      // 3. 서버에 상태 변경 요청
       if (completed) {
         await incompleteTodo(id);
-        // toast 제거
       } else {
         await completeTodo(id);
-        // toast 제거
       }
     } catch (error) {
-      // 4. 실패 시 원래 상태로 롤백
       setTodos(previousTodos);
       console.error('Failed to toggle todo:', error);
       toast('할 일 상태 변경에 실패했습니다.', {
@@ -216,7 +191,6 @@ export function TodoTable() {
     }
   };
 
-  // 할 일 추가
   const handleAddTodo = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTask.trim()) return;
@@ -225,8 +199,6 @@ export function TodoTable() {
       await createTodo(newTask);
       setNewTask('');
       setOpen(false);
-      // toast 제거
-      // 성공하면 목록 다시 불러오기
       await fetchTodos();
     } catch (error) {
       console.error('Failed to create todo:', error);
@@ -246,14 +218,12 @@ export function TodoTable() {
     }
   };
 
-  // 수정 Dialog 열기
   const handleEditClick = (todo: Todo) => {
     setEditingTodo(todo);
     setEditTask(todo.task);
     setEditOpen(true);
   };
 
-  // 할 일 수정
   const handleEditTodo = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editTask.trim() || !editingTodo) return;
@@ -276,7 +246,6 @@ export function TodoTable() {
           border: '1px solid var(--green)',
         },
       });
-      // 성공하면 목록 다시 불러오기
       await fetchTodos();
     } catch (error) {
       console.error('Failed to update todo:', error);
@@ -296,7 +265,6 @@ export function TodoTable() {
     }
   };
 
-  // 할 일 삭제
   const handleDeleteTodo = async (id: number) => {
     try {
       await deleteTodo(id);
@@ -313,7 +281,6 @@ export function TodoTable() {
           border: '1px solid var(--red)',
         },
       });
-      // 성공하면 목록 다시 불러오기
       await fetchTodos();
     } catch (error) {
       console.error('Failed to delete todo:', error);
@@ -337,7 +304,6 @@ export function TodoTable() {
     <WidgetBox>
       {/* 검색 및 필터 영역 */}
       <div className="mb-4 flex items-center justify-between gap-2">
-        {/* 검색 입력 */}
         <Input
           placeholder="할 일 검색..."
           value={searchTerm}
@@ -346,7 +312,6 @@ export function TodoTable() {
         />
 
         <div className="flex gap-2">
-          {/* 컬럼 표시/숨김 필터 */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">
@@ -381,7 +346,6 @@ export function TodoTable() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* 할 일 추가 Dialog */}
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button type="button">할 일 추가</Button>
@@ -416,7 +380,6 @@ export function TodoTable() {
             </DialogContent>
           </Dialog>
 
-          {/* 할 일 수정 Dialog */}
           <Dialog open={editOpen} onOpenChange={setEditOpen}>
             <DialogContent className="sm:max-w-[425px]">
               <form onSubmit={handleEditTodo}>
@@ -453,10 +416,8 @@ export function TodoTable() {
         <Table>
           <TableHeader>
             <TableRow>
-              {/* 할 일 컬럼 */}
               {columnVisibility.task && <TableHead>할 일</TableHead>}
 
-              {/* 생성일 컬럼 (정렬 가능) */}
               {columnVisibility.createdAt && (
                 <TableHead>
                   <Button
@@ -469,7 +430,6 @@ export function TodoTable() {
                 </TableHead>
               )}
 
-              {/* 완료 상태 컬럼 (정렬 가능) */}
               {columnVisibility.completed && (
                 <TableHead className="w-[100px]">
                   <Button
@@ -482,12 +442,10 @@ export function TodoTable() {
                 </TableHead>
               )}
 
-              {/* 액션 컬럼 (수정/삭제) */}
               <TableHead className="w-[50px]"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {/* 로딩 상태 */}
             {loading ? (
               <TableRow>
                 <TableCell
@@ -500,22 +458,18 @@ export function TodoTable() {
                 </TableCell>
               </TableRow>
             ) : currentTodos.length > 0 ? (
-              // 할 일 목록 렌더링
               currentTodos.map((todo) => (
                 <TableRow key={todo.id}>
-                  {/* 할 일 내용 */}
                   {columnVisibility.task && (
                     <TableCell className="break-words max-w-xs">
                       {todo.task}
                     </TableCell>
                   )}
 
-                  {/* 생성일 */}
                   {columnVisibility.createdAt && (
                     <TableCell>{formatDate(todo.createdAt)}</TableCell>
                   )}
 
-                  {/* 완료 상태 토글 */}
                   {columnVisibility.completed && (
                     <TableCell>
                       <Toggle
@@ -534,7 +488,6 @@ export function TodoTable() {
                     </TableCell>
                   )}
 
-                  {/* 수정/삭제 메뉴 */}
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -559,7 +512,6 @@ export function TodoTable() {
                 </TableRow>
               ))
             ) : (
-              // 할 일 없을 때
               <TableRow>
                 <TableCell
                   colSpan={
@@ -577,7 +529,6 @@ export function TodoTable() {
 
       {/* 페이지네이션 */}
       {loading ? (
-        // 로딩 중일 때 Skeleton 표시
         <div className="flex items-center justify-between">
           <Skeleton className="h-5 w-32" />
           <div className="flex gap-2">
@@ -586,26 +537,23 @@ export function TodoTable() {
           </div>
         </div>
       ) : (
-        // 할 일이 있을 때만 페이지네이션 표시
         filteredAndSortedTodos.length > 0 && (
           <div className="flex items-center justify-between">
-            {/* 페이지 정보 */}
             <div className="text-sm text-muted-foreground">
               {totalPages}페이지 중 {currentPage}페이지
             </div>
-            {/* 페이지 이동 버튼 */}
             <div className="space-x-2">
               <Button
                 variant="outline"
                 onClick={() => setCurrentPage(currentPage - 1)}
-                disabled={currentPage === 1} // 첫 페이지에서 비활성화
+                disabled={currentPage === 1}
               >
                 이전
               </Button>
               <Button
                 variant="outline"
                 onClick={() => setCurrentPage(currentPage + 1)}
-                disabled={currentPage === totalPages} // 마지막 페이지에서 비활성화
+                disabled={currentPage === totalPages}
               >
                 다음
               </Button>

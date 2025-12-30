@@ -1,9 +1,11 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
-const isDev = process.env.NODE_ENV === 'development';
-
 export interface ExchangeRate {
   currency: string;
   rate: string;
+}
+
+export interface ExchangeRateResponse {
+  rates: ExchangeRate[];
+  executionTimeMs: number;
 }
 
 interface GraphQLResponse {
@@ -15,7 +17,6 @@ interface GraphQLResponse {
   };
 }
 
-// 환율 조회
 export async function getExchangeRates(
   currencyCodes: string[]
 ): Promise<ExchangeRate[]> {
@@ -31,20 +32,11 @@ export async function getExchangeRates(
     }
   `;
 
-  const headers = new Headers();
-  headers.set('Content-Type', 'application/json');
-
-  // 개발 환경에서만 임시 토큰 사용
-  if (isDev && process.env.NEXT_PUBLIC_AUTH_TOKEN) {
-    headers.set(
-      'Authorization',
-      `Bearer ${process.env.NEXT_PUBLIC_AUTH_TOKEN}`
-    );
-  }
-
-  const res = await fetch(`${BASE_URL}/graphql`, {
+  const res = await fetch('/api/proxy?path=/graphql', {
     method: 'POST',
-    headers,
+    headers: {
+      'Content-Type': 'application/json',
+    },
     credentials: 'include',
     body: JSON.stringify({
       query: GRAPHQL_QUERY,
@@ -56,4 +48,32 @@ export async function getExchangeRates(
 
   const result: GraphQLResponse = await res.json();
   return result.data.specificExchangeRates.rates;
+}
+
+export async function getAllExchangeRates(): Promise<ExchangeRateResponse> {
+  const response = await fetch(
+    '/api/proxy?path=/api/v1/exchange/rate/all/async',
+    {
+      credentials: 'include',
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch all exchange rates');
+  }
+
+  return response.json();
+}
+
+export async function getAllExchangeRatesWithAxios(): Promise<ExchangeRateResponse> {
+  const axios = (await import('axios')).default;
+
+  const response = await axios.get(
+    '/api/proxy?path=/api/v1/exchange/rate/all/async',
+    {
+      withCredentials: true,
+    }
+  );
+
+  return response.data;
 }

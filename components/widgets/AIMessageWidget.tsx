@@ -5,6 +5,7 @@ import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 import { Spinner } from '../ui/spinner';
 import { WidgetBox } from '../ui/widget-box';
+import { streamAIMessage } from '@/lib/api/ai';
 
 interface Message {
   id: string;
@@ -34,40 +35,13 @@ export default function AIMessageWidget() {
     setStreamingMessage('');
 
     try {
-      const url = `${
-        process.env.NEXT_PUBLIC_API_URL
-      }/api/ai/stream?message=${encodeURIComponent(trimmedInput)}&provider=GPT`;
-
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_AUTH_TOKEN}`,
-        },
-      });
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-
-      if (!reader) return;
-
-      let fullMessage = '';
-
-      // 스트림 데이터를 실시간으로 읽어서 화면에 표시
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const text = decoder.decode(value);
-        const lines = text.split('\n');
-
-        for (const line of lines) {
-          if (line.startsWith('data:')) {
-            const data = line.slice(5);
-            if (data) {
-              fullMessage += data;
-              setStreamingMessage(fullMessage);
-            }
-          }
+      const fullMessage = await streamAIMessage(
+        trimmedInput,
+        'GPT',
+        (chunk) => {
+          setStreamingMessage((prev) => prev + chunk);
         }
-      }
+      );
 
       const aiMessage: Message = {
         id: Date.now().toString(),
@@ -100,7 +74,6 @@ export default function AIMessageWidget() {
             </div>
           )}
 
-          {/* 스트리밍 중인 메시지 실시간 표시 */}
           {streamingMessage && (
             <div>
               <strong>T1 TETZ:</strong> {streamingMessage}

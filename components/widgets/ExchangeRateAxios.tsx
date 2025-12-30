@@ -9,21 +9,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { WidgetBox } from '@/components/ui/widget-box';
-import axios from 'axios';
 import { toast } from 'sonner';
-
-interface ExchangeRate {
-  currency: string;
-  rate: string;
-}
-
-interface ExchangeRateResponse {
-  rates: ExchangeRate[];
-  executionTimeMs: number;
-}
+import {
+  getAllExchangeRatesWithAxios,
+  ExchangeRateResponse,
+} from '@/lib/api/exchange';
 
 export default function ExchangeRateAxios() {
-  // localStorage에서 초기값 가져오기
   const [selectedCurrency, setSelectedCurrency] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('selectedCurrencyAxios') || '';
@@ -39,16 +31,8 @@ export default function ExchangeRateAxios() {
       try {
         setIsLoading(true);
         setIsError(false);
-
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/exchange/rate/all/async`,
-          {
-            headers: {
-              Authorization: `Bearer ${process.env.NEXT_PUBLIC_AUTH_TOKEN}`,
-            },
-          }
-        );
-        setData(response.data);
+        const result = await getAllExchangeRatesWithAxios();
+        setData(result);
       } catch (error) {
         console.error('환율 데이터 가져오기 실패:', error);
         setIsError(true);
@@ -73,7 +57,6 @@ export default function ExchangeRateAxios() {
     fetchExchangeRates();
   }, []);
 
-  // 통화 선택 변경 시 localStorage에 저장
   const handleCurrencyChange = (value: string) => {
     setSelectedCurrency(value);
     localStorage.setItem('selectedCurrencyAxios', value);

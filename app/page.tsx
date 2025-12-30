@@ -2,8 +2,8 @@
 
 import Logout from '@/components/Logout';
 import dynamic from 'next/dynamic';
-import SkeletonLoading from '@/components/loading/SkeletonLoading';
-import SpinnerLoading from '@/components/loading/SpinnerLoading';
+import SkeletonLoading from '@/components/ui/loading/SkeletonLoading';
+import SpinnerLoading from '@/components/ui/loading/SpinnerLoading';
 import { useABTest } from '@/lib/hooks/useABTest';
 
 const DashboardDndKit = dynamic(() => import('@/components/DashboardDndKit'), {

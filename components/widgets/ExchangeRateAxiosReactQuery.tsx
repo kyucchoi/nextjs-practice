@@ -9,22 +9,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { WidgetBox } from '@/components/ui/widget-box';
-import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
-import { toast } from 'sonner';
-
-interface ExchangeRate {
-  currency: string;
-  rate: string;
-}
-
-interface ExchangeRateResponse {
-  rates: ExchangeRate[];
-  executionTimeMs: number;
-}
+import { getAllExchangeRatesWithAxios } from '@/lib/api/exchange';
 
 export default function ExchangeRateARQ() {
-  // localStorage에서 초기값 가져오기
   const [selectedCurrency, setSelectedCurrency] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('selectedCurrencyARQ') || '';
@@ -32,39 +20,12 @@ export default function ExchangeRateARQ() {
     return '';
   });
 
-  const { data, isLoading, isError } = useQuery<ExchangeRateResponse>({
-    queryKey: ['exchange-rates'],
-    queryFn: async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/exchange/rate/all/async`,
-          {
-            headers: {
-              Authorization: `Bearer ${process.env.NEXT_PUBLIC_AUTH_TOKEN}`,
-            },
-          }
-        );
-        return response.data;
-      } catch (error) {
-        toast('환율 정보를 불러오는데 실패했습니다.', {
-          icon: (
-            <i
-              className="fa-solid fa-xmark"
-              style={{ color: 'var(--red)', fontSize: '20px' }}
-            ></i>
-          ),
-          style: {
-            background: 'var(--white)',
-            color: 'var(--black)',
-            border: '1px solid var(--red)',
-          },
-        });
-        throw error;
-      }
-    },
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['exchange-rates-axios'],
+    queryFn: getAllExchangeRatesWithAxios,
+    retry: 1,
   });
 
-  // 통화 선택 변경 시 localStorage에 저장
   const handleCurrencyChange = (value: string) => {
     setSelectedCurrency(value);
     localStorage.setItem('selectedCurrencyARQ', value);

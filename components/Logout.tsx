@@ -7,25 +7,42 @@ import { toast } from 'sonner';
 export default function Logout() {
   const router = useRouter();
 
-  const handleLogout = () => {
-    // JWT 쿠키 삭제 (max-age=0으로 즉시 만료)
-    document.cookie = 'jwt=; path=/; max-age=0';
+  const handleLogout = async () => {
+    try {
+      const { clearAuthCookie } = await import('@/app/auth/actions');
+      await clearAuthCookie();
 
-    toast('로그아웃 되었습니다.', {
-      icon: (
-        <i
-          className="fa-solid fa-check"
-          style={{ color: 'var(--green)', fontSize: '20px' }}
-        ></i>
-      ),
-      style: {
-        background: 'var(--white)',
-        color: 'var(--black)',
-        border: '1px solid var(--green)',
-      },
-    });
+      toast('로그아웃 되었습니다.', {
+        icon: (
+          <i
+            className="fa-solid fa-check"
+            style={{ color: 'var(--green)', fontSize: '20px' }}
+          ></i>
+        ),
+        style: {
+          background: 'var(--white)',
+          color: 'var(--black)',
+          border: '1px solid var(--green)',
+        },
+      });
 
-    router.push('/login');
+      router.push('/login');
+    } catch (error) {
+      console.error('Failed to clear auth cookie:', error);
+      toast('로그아웃 처리 중 오류가 발생했습니다.', {
+        icon: (
+          <i
+            className="fa-solid fa-xmark"
+            style={{ color: 'var(--red)', fontSize: '20px' }}
+          ></i>
+        ),
+        style: {
+          background: 'var(--white)',
+          color: 'var(--black)',
+          border: '1px solid var(--red)',
+        },
+      });
+    }
   };
 
   return (

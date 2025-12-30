@@ -14,7 +14,6 @@ import { toast } from 'sonner';
 import Image from 'next/image';
 import { getWeather, type WeatherData } from '@/lib/api/weather';
 
-// 도시 목록 (영문 value, 한글 label)
 const CITIES = [
   { value: 'Seoul', label: '서울' },
   { value: 'Busan', label: '부산' },
@@ -25,7 +24,6 @@ const CITIES = [
 ];
 
 export default function WeatherWidget() {
-  // localStorage에서 초기값 가져오기
   const [city, setCity] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('selectedCity') || '';
@@ -36,7 +34,6 @@ export default function WeatherWidget() {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  // 날씨 데이터 fetch 함수
   const fetchWeather = async (cityName: string) => {
     try {
       setIsLoading(true);
@@ -65,20 +62,17 @@ export default function WeatherWidget() {
     }
   };
 
-  // 도시 선택 시 날씨 데이터 fetch
   useEffect(() => {
     if (city) {
       fetchWeather(city);
     }
   }, [city]);
 
-  // 도시 선택 변경 시 localStorage에 저장
   const handleCityChange = (value: string) => {
     setCity(value);
     localStorage.setItem('selectedCity', value);
   };
 
-  // 영문 도시명을 한글로 변환
   const cityLabel = weather
     ? CITIES.find((c) => c.value === weather.name)?.label || weather.name
     : '';
@@ -99,7 +93,6 @@ export default function WeatherWidget() {
         </SelectContent>
       </Select>
 
-      {/* 로딩 상태: Skeleton UI 표시 */}
       {isLoading && (
         <div className="space-y-2">
           <Skeleton className="h-8 w-24 mx-auto" />
@@ -118,14 +111,12 @@ export default function WeatherWidget() {
         </div>
       )}
 
-      {/* 에러 상태 */}
       {isError && (
         <div className="flex items-center justify-center h-50">
           <p className="text-gray-500">날씨 정보를 불러올 수 없습니다</p>
         </div>
       )}
 
-      {/* 초기 상태 */}
       {!city && !isLoading && !isError && (
         <div className="flex items-center justify-center h-50">
           <p className="text-gray-500">날씨를 추가해보세요</p>

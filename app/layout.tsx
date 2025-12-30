@@ -67,7 +67,9 @@ export default function RootLayout({
         <GoogleAnalytics
           gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ''}
         />
-        <Providers>{children}</Providers>
+        <div className="max-w-md mx-auto bg-white md:shadow-lg min-h-screen">
+          <Providers>{children}</Providers>
+        </div>
         <Toaster position="top-center" />
       </body>
     </html>
