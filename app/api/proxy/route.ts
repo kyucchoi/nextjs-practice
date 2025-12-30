@@ -26,6 +26,10 @@ async function handleProxyRequest(request: NextRequest, method: string) {
       return new Response('Path parameter is required', { status: 400 });
     }
 
+    if (!path.startsWith('/api/')) {
+      return new Response('Invalid path', { status: 400 });
+    }
+
     const url = new URL(`${BASE_URL}${path}`);
 
     request.nextUrl.searchParams.forEach((value, key) => {
@@ -43,6 +47,16 @@ async function handleProxyRequest(request: NextRequest, method: string) {
 
     if (isDev && process.env.AUTH_TOKEN) {
       headers['Authorization'] = `Bearer ${process.env.AUTH_TOKEN}`;
+    }
+
+    if (!isDev) {
+      const cookieHeader = request.headers.get('cookie');
+      if (cookieHeader) {
+        const jwtMatch = cookieHeader.match(/jwt=([^;]+)/);
+        if (jwtMatch) {
+          headers['Authorization'] = `Bearer ${jwtMatch[1]}`;
+        }
+      }
     }
 
     let body: string | undefined;
