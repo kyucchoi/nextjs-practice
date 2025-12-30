@@ -216,7 +216,7 @@ export default function BoardSection({ pollId }: BoardSectionProps) {
             />
             <button
               onClick={handleNicknameSave}
-              className="text-xs px-2 rounded h-full"
+              className="text-xs px-2 rounded h-full cursor-pointer"
               style={{
                 backgroundColor: 'var(--hyobam-primary)',
                 color: 'white',
@@ -226,7 +226,7 @@ export default function BoardSection({ pollId }: BoardSectionProps) {
             </button>
             <button
               onClick={handleNicknameCancel}
-              className="text-xs px-2 rounded bg-gray-200 text-gray-700 h-full"
+              className="text-xs px-2 rounded bg-gray-200 text-gray-700 h-full cursor-pointer"
             >
               <i className="fa-solid fa-xmark"></i>
             </button>
@@ -242,7 +242,7 @@ export default function BoardSection({ pollId }: BoardSectionProps) {
             </span>
             <button
               onClick={handleNicknameEdit}
-              className="text-xs text-gray-500 hover:text-gray-700"
+              className="text-xs text-gray-500 hover:text-gray-700 cursor-pointer"
             >
               <i className="fa-solid fa-pen"></i>
             </button>
@@ -271,7 +271,7 @@ export default function BoardSection({ pollId }: BoardSectionProps) {
         />
         <Button
           onClick={handleCreateComment}
-          className="text-white"
+          className="text-white cursor-pointer"
           style={{ backgroundColor: 'var(--hyobam-primary)' }}
           onMouseEnter={(e) =>
             (e.currentTarget.style.backgroundColor =
@@ -396,7 +396,7 @@ export default function BoardSection({ pollId }: BoardSectionProps) {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => handleLike(comment.id)}
-                  className={`flex items-center gap-1 text-xs ${
+                  className={`flex items-center gap-1 text-xs cursor-pointer ${
                     comment.isLiked ? 'font-bold' : 'text-gray-500'
                   }`}
                   style={

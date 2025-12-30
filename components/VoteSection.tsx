@@ -122,7 +122,7 @@ export default function VoteSection({ pollId }: VoteSectionProps) {
         {isVoted && poll.allowChangeVote && (
           <button
             onClick={handleEditVote}
-            className="absolute top-4 right-4 rounded-lg transition-all text-sm font-medium"
+            className="absolute top-4 right-4 rounded-lg transition-all text-sm font-medium cursor-pointer"
             style={{ color: 'var(--hyobam-text)' }}
             onMouseEnter={(e) => {
               e.currentTarget.style.color = 'var(--hyobam-primary-hover)';
@@ -268,7 +268,7 @@ export default function VoteSection({ pollId }: VoteSectionProps) {
               <Button
                 onClick={handleSubmitVote}
                 disabled={isSubmitting}
-                className="w-full font-bold border-2"
+                className="w-full font-bold border-2 cursor-pointer"
                 style={{
                   backgroundColor: 'var(--hyobam-bg)',
                   color: 'var(--hyobam-primary-hover)',

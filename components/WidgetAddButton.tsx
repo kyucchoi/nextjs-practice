@@ -95,7 +95,7 @@ export default function WidgetAddButton() {
             <TooltipTrigger asChild>
               <DrawerTrigger asChild>
                 <Button variant="ghost" size="icon">
-                  <i className="fa-solid fa-bars text-xl"></i>
+                  <i className="fa-solid fa-plus text-xl"></i>
                 </Button>
               </DrawerTrigger>
             </TooltipTrigger>
@@ -103,14 +103,14 @@ export default function WidgetAddButton() {
               <p>위젯 추가</p>
             </TooltipContent>
           </Tooltip>
-          <DrawerContent>
+          <DrawerContent className="max-w-md mx-auto">
             <DrawerHeader>
               <DrawerTitle>위젯 선택</DrawerTitle>
               <DrawerDescription>
                 원하는 위젯을 추가하거나 제거하세요
               </DrawerDescription>
             </DrawerHeader>
-            <div className="p-4">
+            <div className="p-4 pb-8">
               <div className="grid grid-cols-2 gap-4">
                 {AVAILABLE_WIDGETS.map((widget) => {
                   const isActive = activeWidgetIds.includes(widget.id);
