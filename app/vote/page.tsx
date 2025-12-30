@@ -38,8 +38,12 @@ export default function VotePage() {
   return (
     <div className="py-5">
       <div className="mb-5">
-        <Button variant="outline" onClick={() => window.history.back()}>
-          <i className="fa-solid fa-arrow-left"></i> 뒤로 가기
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => window.history.back()}
+        >
+          <i className="fa-solid fa-angle-left text-xl"></i>
         </Button>
       </div>
 

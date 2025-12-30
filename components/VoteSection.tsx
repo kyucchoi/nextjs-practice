@@ -98,8 +98,8 @@ export default function VoteSection({ pollId }: VoteSectionProps) {
       >
         <div className="space-y-4">
           <div className="h-6 bg-gray-200 rounded-lg w-1/2 mx-auto animate-pulse"></div>
-          <div className="h-2 bg-gray-200 rounded w-3/4 mx-auto animate-pulse"></div>
-          <div className="h-16 bg-gray-200 rounded-lg animate-pulse"></div>
+          <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto animate-pulse"></div>
+          <div className="h-11 bg-gray-200 rounded-lg animate-pulse"></div>
           <div className="h-31 bg-gray-200 rounded-xl animate-pulse"></div>
           <div className="h-31 bg-gray-200 rounded-xl animate-pulse"></div>
         </div>
@@ -122,7 +122,7 @@ export default function VoteSection({ pollId }: VoteSectionProps) {
         {isVoted && poll.allowChangeVote && (
           <button
             onClick={handleEditVote}
-            className="absolute top-4 right-4 p-2 rounded-lg transition-all"
+            className="absolute top-4 right-4 rounded-lg transition-all text-sm font-medium"
             style={{ color: 'var(--hyobam-text)' }}
             onMouseEnter={(e) => {
               e.currentTarget.style.color = 'var(--hyobam-primary-hover)';
@@ -132,13 +132,13 @@ export default function VoteSection({ pollId }: VoteSectionProps) {
               e.currentTarget.style.color = 'var(--hyobam-text)';
               e.currentTarget.style.backgroundColor = '';
             }}
-            title="수정하기"
+            title="재투표"
           >
-            <i className="fa-solid fa-clock-rotate-left"></i>
+            재투표
           </button>
         )}
         <div className="space-y-4">
-          <h2 className="text-xl font-bold text-center mb-2">{poll.title}</h2>
+          <h2 className="text-xl font-bold text-center">{poll.title}</h2>
           {poll.description && (
             <p className="text-center text-sm text-gray-600 mb-2">
               {poll.description}
@@ -153,13 +153,11 @@ export default function VoteSection({ pollId }: VoteSectionProps) {
               </div>
               <div className="flex items-center justify-center gap-1 border-x border-gray-200">
                 <span style={{ color: 'var(--hyobam-text)' }}>
-                  참석 {attendOption?.voteCount || 0}명 (
-                  {attendOption?.percentage || 0}%)
+                  참석 {attendOption?.voteCount || 0}명
                 </span>
               </div>
               <div className="flex items-center justify-center gap-1 text-gray-600">
-                불참 {notAttendOption?.voteCount || 0}명 (
-                {notAttendOption?.percentage || 0}%)
+                불참 {notAttendOption?.voteCount || 0}명
               </div>
             </div>
           </div>

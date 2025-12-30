@@ -1,6 +1,12 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
@@ -46,10 +52,17 @@ export default function Logout() {
   };
 
   return (
-    <header className="flex justify-end">
-      <Button variant="outline" onClick={handleLogout}>
-        <i className="fa-solid fa-arrow-right-from-bracket"></i> 로그아웃
-      </Button>
-    </header>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="ghost" size="icon" onClick={handleLogout}>
+            <i className="fa-solid fa-arrow-right-from-bracket text-xl"></i>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>로그아웃</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }

@@ -19,6 +19,10 @@ export async function DELETE(request: NextRequest) {
   return handleProxyRequest(request, 'DELETE');
 }
 
+export async function PATCH(request: NextRequest) {
+  return handleProxyRequest(request, 'PATCH');
+}
+
 async function handleProxyRequest(request: NextRequest, method: string) {
   try {
     const path = request.nextUrl.searchParams.get('path');
@@ -26,7 +30,7 @@ async function handleProxyRequest(request: NextRequest, method: string) {
       return new Response('Path parameter is required', { status: 400 });
     }
 
-    if (!path.startsWith('/api/')) {
+    if (!path.startsWith('/api/') && !path.startsWith('/graphql')) {
       return new Response('Invalid path', { status: 400 });
     }
 
@@ -60,7 +64,7 @@ async function handleProxyRequest(request: NextRequest, method: string) {
     }
 
     let body: string | undefined;
-    if (method !== 'GET' && method !== 'DELETE') {
+    if (method !== 'GET' && method !== 'DELETE' && method !== 'PATCH') {
       body = await request.text();
     }
 

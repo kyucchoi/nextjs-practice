@@ -17,15 +17,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { widgetStore, AVAILABLE_WIDGETS } from '@/store/widgetStore';
-import { toast } from 'sonner';
+import { widgetStore } from '@/store/widgetStore';
 
 interface SortableItemProps {
   id: string;
@@ -72,7 +64,7 @@ function SortableItem({
 }
 
 export default function DashboardDndKit() {
-  const { widgets, addWidget, removeWidget, setWidgets } = widgetStore();
+  const { widgets, setWidgets } = widgetStore();
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
@@ -105,98 +97,8 @@ export default function DashboardDndKit() {
     setActiveId(null);
   };
 
-  const handleToggleWidget = (widgetId: string, checked: boolean) => {
-    const widgetName =
-      AVAILABLE_WIDGETS.find((w) => w.id === widgetId)?.name || '위젯';
-
-    if (checked) {
-      addWidget(widgetId);
-      toast(`${widgetName} 위젯이 추가되었습니다!`, {
-        icon: (
-          <i
-            className="fa-solid fa-check"
-            style={{ color: 'var(--css-green)', fontSize: '20px' }}
-          ></i>
-        ),
-        style: {
-          background: 'var(--css-white)',
-          color: 'var(--css-black)',
-          border: '1px solid var(--css-green)',
-        },
-      });
-    } else {
-      removeWidget(widgetId);
-      toast(`${widgetName} 위젯이 삭제되었습니다!`, {
-        icon: (
-          <i
-            className="fa-solid fa-trash"
-            style={{ color: 'var(--css-red)', fontSize: '20px' }}
-          ></i>
-        ),
-        style: {
-          background: 'var(--css-white)',
-          color: 'var(--css-black)',
-          border: '1px solid var(--css-red)',
-        },
-      });
-    }
-  };
-
-  const handleRemoveAll = () => {
-    if (widgets.length === 0) return;
-
-    setWidgets([]);
-    toast('모든 위젯이 삭제되었습니다!', {
-      icon: (
-        <i
-          className="fa-solid fa-trash"
-          style={{ color: 'var(--css-red)', fontSize: '20px' }}
-        ></i>
-      ),
-      style: {
-        background: 'var(--css-white)',
-        color: 'var(--css-black)',
-        border: '1px solid var(--css-red)',
-      },
-    });
-  };
-
-  const activeWidgetIds = widgets.map((w) => w.id);
-
   return (
     <div className="mt-5">
-      <div className="mb-4 flex justify-end gap-2">
-        {widgets.length > 0 && (
-          <Button variant="destructive" onClick={handleRemoveAll}>
-            <i className="fa-solid fa-trash"></i>
-            전체 삭제
-          </Button>
-        )}
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button>
-              <i className="fa-solid fa-plus"></i> 위젯 추가
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {AVAILABLE_WIDGETS.map((widget) => (
-              <DropdownMenuCheckboxItem
-                key={widget.id}
-                checked={activeWidgetIds.includes(widget.id)}
-                onCheckedChange={(checked) => {
-                  if (typeof checked === 'boolean') {
-                    handleToggleWidget(widget.id, checked);
-                  }
-                }}
-              >
-                {widget.name}
-              </DropdownMenuCheckboxItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
       {widgets.length === 0 ? (
         <div className="flex items-center justify-center h-[calc(100vh-400px)]">
           <div className="text-center text-muted-foreground">

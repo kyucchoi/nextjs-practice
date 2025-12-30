@@ -501,7 +501,7 @@ export function TodoTable() {
                           수정
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          className="text-red-600"
+                          style={{ color: 'var(--css-red)' }}
                           onClick={() => handleDeleteTodo(todo.id)}
                         >
                           삭제
