@@ -104,7 +104,7 @@ export default function DashboardDndKit() {
           <div className="text-center text-muted-foreground">
             <p className="text-lg">위젯을 추가해보세요!</p>
             <p className="text-sm mt-2">
-              우측 상단의 &quot;위젯 추가&quot; 버튼을 눌러보세요!
+              좌측 상단의 &quot;+&quot; 버튼을 눌러보세요!
             </p>
           </div>
         </div>

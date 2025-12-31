@@ -233,19 +233,6 @@ export function TodoTable() {
       setEditTask('');
       setEditingTodo(null);
       setEditOpen(false);
-      toast('할 일이 수정되었습니다!', {
-        icon: (
-          <i
-            className="fa-solid fa-pen"
-            style={{ color: 'var(--css-green)', fontSize: '20px' }}
-          ></i>
-        ),
-        style: {
-          background: 'var(--css-white)',
-          color: 'var(--css-black)',
-          border: '1px solid var(--css-green)',
-        },
-      });
       await fetchTodos();
     } catch (error) {
       console.error('Failed to update todo:', error);
@@ -268,19 +255,6 @@ export function TodoTable() {
   const handleDeleteTodo = async (id: number) => {
     try {
       await deleteTodo(id);
-      toast('할 일이 삭제되었습니다!', {
-        icon: (
-          <i
-            className="fa-solid fa-trash"
-            style={{ color: 'var(--css-red)', fontSize: '20px' }}
-          ></i>
-        ),
-        style: {
-          background: 'var(--css-white)',
-          color: 'var(--css-black)',
-          border: '1px solid var(--css-red)',
-        },
-      });
       await fetchTodos();
     } catch (error) {
       console.error('Failed to delete todo:', error);

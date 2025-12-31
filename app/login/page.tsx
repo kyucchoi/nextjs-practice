@@ -60,8 +60,8 @@ function LoginContent() {
 
     if (!API_URL) {
       console.error('NEXT_PUBLIC_API_URL is not set');
-      toast('로그인 서버 주소가 설정되지 않았습니다.', {
-        description: '관리자에게 문의하세요.',
+      toast('로그인에 문제가 생겼습니다.', {
+        description: '다시 시도해주세요.',
         icon: (
           <i
             className="fa-solid fa-xmark"
@@ -88,23 +88,9 @@ function LoginContent() {
     const { outcome } = await deferredPrompt.userChoice;
 
     if (outcome === 'accepted') {
-      toast('앱이 설치되었습니다!', {
-        icon: (
-          <i
-            className="fa-solid fa-check"
-            style={{ color: 'var(--css-green)', fontSize: '20px' }}
-          ></i>
-        ),
-        style: {
-          background: 'var(--css-white)',
-          color: 'var(--css-black)',
-          border: '1px solid var(--css-green)',
-        },
-      });
+      setShowInstallButton(false);
+      setDeferredPrompt(null);
     }
-
-    setDeferredPrompt(null);
-    setShowInstallButton(false);
   };
 
   return (
