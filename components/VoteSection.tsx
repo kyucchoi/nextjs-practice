@@ -142,7 +142,7 @@ export default function VoteSection({ pollId }: VoteSectionProps) {
 
           <div className="text-center py-3 px-4 rounded-lg bg-white border border-gray-200 mb-4">
             <div className="flex items-center justify-center gap-2 text-sm">
-              <span className="text-lg">🎉🎉🎉🎉🎉</span>
+              <span className="text-lg">🎉🎉🎉</span>
               <div className="flex items-center gap-1">
                 <span
                   className="font-semibold"
@@ -151,7 +151,7 @@ export default function VoteSection({ pollId }: VoteSectionProps) {
                   참석 {attendOption?.voteCount || 0}명
                 </span>
               </div>
-              <span className="text-lg">🎊🎊🎊🎊🎊</span>
+              <span className="text-lg">🎊🎊🎊</span>
             </div>
           </div>
 
