@@ -181,7 +181,7 @@ export default function BoardSection({ pollId }: BoardSectionProps) {
 
   return (
     <div
-      className="mt-8 border-2 rounded-xl p-5"
+      className="border-2 rounded-xl p-5"
       style={{
         borderColor: 'var(--hyobam-border)',
         backgroundColor: 'var(--hyobam-bg)',

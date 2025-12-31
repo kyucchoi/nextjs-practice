@@ -28,7 +28,7 @@ export default function VoteBanner() {
             </div>
             <div className="flex-1">
               <h3 className="font-bold text-lg mb-1">효밤 투표하기</h3>
-              <p className="text-gray-600 text-sm">TETZ와 함께 놀아보아요 →</p>
+              <p className="text-sm">TETZ와 함께 놀아보아요 →</p>
             </div>
           </div>
         </div>

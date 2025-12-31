@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { getPoll, submitVote, type Poll } from '@/lib/api/vote';
 import { toast } from 'sonner';
 
@@ -97,11 +98,10 @@ export default function VoteSection({ pollId }: VoteSectionProps) {
         }}
       >
         <div className="space-y-4">
-          <div className="h-6 bg-gray-200 rounded-lg w-1/2 mx-auto animate-pulse"></div>
-          <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto animate-pulse"></div>
-          <div className="h-11 bg-gray-200 rounded-lg animate-pulse"></div>
-          <div className="h-31 bg-gray-200 rounded-xl animate-pulse"></div>
-          <div className="h-31 bg-gray-200 rounded-xl animate-pulse"></div>
+          <Skeleton className="h-7 w-1/2 mx-auto" />
+          <Skeleton className="h-14 w-full" />
+          <Skeleton className="h-31 w-full" />
+          <Skeleton className="h-31 w-full" />
         </div>
       </div>
     );
@@ -139,26 +139,19 @@ export default function VoteSection({ pollId }: VoteSectionProps) {
         )}
         <div className="space-y-4">
           <h2 className="text-xl font-bold text-center">{poll.title}</h2>
-          {poll.description && (
-            <p className="text-center text-sm text-gray-600 mb-2">
-              {poll.description}
-            </p>
-          )}
 
           <div className="text-center py-3 px-4 rounded-lg bg-white border border-gray-200 mb-4">
-            <div className="grid grid-cols-3 gap-3 text-sm">
-              <div className="flex items-center justify-center gap-1">
-                <i className="fa-solid fa-users text-gray-600"></i>
-                <span className="font-semibold">{poll.totalVotes}명</span>
-              </div>
-              <div className="flex items-center justify-center gap-1 border-x border-gray-200">
-                <span style={{ color: 'var(--hyobam-text)' }}>
+            <div className="flex items-center justify-center gap-2 text-sm">
+              <span className="text-lg">🎉🎉🎉🎉🎉</span>
+              <div className="flex items-center gap-1">
+                <span
+                  className="font-semibold"
+                  style={{ color: 'var(--hyobam-text)' }}
+                >
                   참석 {attendOption?.voteCount || 0}명
                 </span>
               </div>
-              <div className="flex items-center justify-center gap-1 text-gray-600">
-                불참 {notAttendOption?.voteCount || 0}명
-              </div>
+              <span className="text-lg">🎊🎊🎊🎊🎊</span>
             </div>
           </div>
 

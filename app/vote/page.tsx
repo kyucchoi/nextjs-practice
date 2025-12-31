@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import VoteSection from '@/components/VoteSection';
 import BoardSection from '@/components/BoardSection';
 import { getPolls } from '@/lib/api/vote';
+import InvitationSection from '@/components/InvitationSection';
 
 export default function VotePage() {
   const [pollId, setPollId] = useState<number | null>(null);
@@ -37,35 +38,32 @@ export default function VotePage() {
 
   return (
     <div className="py-5">
-      <div className="mb-5">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => window.history.back()}
-        >
-          <i className="fa-solid fa-angle-left text-xl"></i>
-        </Button>
-      </div>
+      <Button variant="ghost" size="icon" onClick={() => window.history.back()}>
+        <i className="fa-solid fa-angle-left text-xl"></i>
+      </Button>
+      <div className="space-y-5">
+        <InvitationSection />
 
-      {pollId ? (
-        <>
-          <VoteSection pollId={pollId} />
-          <BoardSection pollId={pollId} />
-        </>
-      ) : !isLoading ? (
-        <div
-          className="border-2 rounded-xl p-6"
-          style={{
-            borderColor: 'var(--hyobam-border)',
-            backgroundColor: 'var(--hyobam-bg)',
-          }}
-        >
-          <div className="text-center py-10">
-            <i className="fa-solid fa-inbox text-4xl text-gray-400 mb-4"></i>
-            <p className="text-gray-600">진행 중인 투표가 없습니다.</p>
+        {pollId ? (
+          <>
+            <VoteSection pollId={pollId} />
+            <BoardSection pollId={pollId} />
+          </>
+        ) : !isLoading ? (
+          <div
+            className="border-2 rounded-xl p-6"
+            style={{
+              borderColor: 'var(--hyobam-border)',
+              backgroundColor: 'var(--hyobam-bg)',
+            }}
+          >
+            <div className="text-center py-10">
+              <i className="fa-solid fa-inbox text-4xl text-gray-400 mb-4"></i>
+              <p className="text-gray-600">진행 중인 투표가 없습니다.</p>
+            </div>
           </div>
-        </div>
-      ) : null}
+        ) : null}
+      </div>
     </div>
   );
 }
