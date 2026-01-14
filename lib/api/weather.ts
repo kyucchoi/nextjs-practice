@@ -1,3 +1,5 @@
+import { authFetch } from './fetch';
+
 export interface WeatherData {
   weather: {
     main: string;
@@ -40,12 +42,11 @@ export async function getWeather(city: string): Promise<WeatherData> {
     }
   `;
 
-  const res = await fetch('/api/proxy?path=/graphql', {
+  const res = await authFetch('/api/proxy?path=/graphql', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    credentials: 'include',
     body: JSON.stringify({
       query: GRAPHQL_QUERY,
       variables: {

@@ -1,3 +1,5 @@
+import { authFetch } from './fetch';
+
 export interface ExchangeRate {
   currency: string;
   rate: string;
@@ -32,12 +34,11 @@ export async function getExchangeRates(
     }
   `;
 
-  const res = await fetch('/api/proxy?path=/graphql', {
+  const res = await authFetch('/api/proxy?path=/graphql', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    credentials: 'include',
     body: JSON.stringify({
       query: GRAPHQL_QUERY,
       variables: { currencyCodes },
@@ -51,11 +52,8 @@ export async function getExchangeRates(
 }
 
 export async function getAllExchangeRates(): Promise<ExchangeRateResponse> {
-  const response = await fetch(
-    '/api/proxy?path=/api/v1/exchange/rate/all/async',
-    {
-      credentials: 'include',
-    }
+  const response = await authFetch(
+    '/api/proxy?path=/api/v1/exchange/rate/all/async'
   );
 
   if (!response.ok) {

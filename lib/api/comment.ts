@@ -1,3 +1,5 @@
+import { authFetch } from './fetch';
+
 export interface Comment {
   id: string;
   pollId: number;
@@ -33,7 +35,7 @@ interface LikeStatusResponse {
 export async function createComment(
   data: CreateCommentRequest
 ): Promise<Comment> {
-  const response = await fetch(`/api/proxy?path=/api/tetz/comments`, {
+  const response = await authFetch(`/api/proxy?path=/api/tetz/comments`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -71,7 +73,7 @@ export async function createComment(
 }
 
 export async function likeComment(commentId: string): Promise<void> {
-  const response = await fetch(
+  const response = await authFetch(
     `/api/proxy?path=/api/tetz/comments/${commentId}/like`,
     {
       method: 'POST',
@@ -84,7 +86,7 @@ export async function likeComment(commentId: string): Promise<void> {
 }
 
 export async function getCommentLikeCount(commentId: string): Promise<number> {
-  const response = await fetch(
+  const response = await authFetch(
     `/api/proxy?path=/api/tetz/comments/${commentId}/like/count`
   );
 
@@ -99,7 +101,7 @@ export async function getCommentLikeCount(commentId: string): Promise<number> {
 export async function getCommentLikeStatus(
   commentId: string
 ): Promise<boolean> {
-  const response = await fetch(
+  const response = await authFetch(
     `/api/proxy?path=/api/tetz/comments/${commentId}/like/status`
   );
 
@@ -112,7 +114,7 @@ export async function getCommentLikeStatus(
 }
 
 export async function getComments(pollId: number): Promise<Comment[]> {
-  const response = await fetch(
+  const response = await authFetch(
     `/api/proxy?path=/api/tetz/polls/${pollId}/comments`
   );
 
