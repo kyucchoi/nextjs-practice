@@ -9,10 +9,16 @@ export class AuthError extends Error {
   }
 }
 
+let isRedirecting = false;
+
 export async function authFetch(
   url: string,
   options: FetchOptions = {}
 ): Promise<Response> {
+  if (isRedirecting) {
+    throw new AuthError();
+  }
+
   const { skipAuthRedirect, ...fetchOptions } = options;
 
   const response = await fetch(url, {
@@ -24,7 +30,8 @@ export async function authFetch(
     (response.status === 401 || response.status === 403) &&
     !skipAuthRedirect
   ) {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && !isRedirecting) {
+      isRedirecting = true;
       const { clearAuthCookie } = await import('@/app/auth/actions');
       await clearAuthCookie();
 
