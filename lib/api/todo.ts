@@ -1,5 +1,3 @@
-import { authFetch } from './fetch';
-
 export interface Todo {
   id: number;
   task: string;
@@ -14,11 +12,12 @@ const getOptions = (init?: RequestInit): RequestInit => {
   return {
     ...init,
     headers,
+    credentials: 'include',
   };
 };
 
 export async function createTodo(task: string): Promise<Todo> {
-  const res = await authFetch(
+  const res = await fetch(
     '/api/proxy?path=/api/v1/todo',
     getOptions({
       method: 'POST',
@@ -30,7 +29,7 @@ export async function createTodo(task: string): Promise<Todo> {
 }
 
 export async function updateTodo(id: number, task: string): Promise<Todo> {
-  const res = await authFetch(
+  const res = await fetch(
     `/api/proxy?path=/api/v1/todo/${id}`,
     getOptions({
       method: 'PUT',
@@ -42,7 +41,7 @@ export async function updateTodo(id: number, task: string): Promise<Todo> {
 }
 
 export async function deleteTodo(id: number): Promise<void> {
-  const res = await authFetch(
+  const res = await fetch(
     `/api/proxy?path=/api/v1/todo/${id}`,
     getOptions({ method: 'DELETE' })
   );
@@ -50,7 +49,7 @@ export async function deleteTodo(id: number): Promise<void> {
 }
 
 export async function completeTodo(id: number): Promise<Todo> {
-  const res = await authFetch(
+  const res = await fetch(
     `/api/proxy?path=/api/v1/todo/${id}/complete`,
     getOptions({ method: 'PATCH' })
   );
@@ -59,7 +58,7 @@ export async function completeTodo(id: number): Promise<Todo> {
 }
 
 export async function incompleteTodo(id: number): Promise<Todo> {
-  const res = await authFetch(
+  const res = await fetch(
     `/api/proxy?path=/api/v1/todo/${id}/incomplete`,
     getOptions({ method: 'PATCH' })
   );

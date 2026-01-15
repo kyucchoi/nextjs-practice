@@ -1,10 +1,8 @@
-import { authFetch } from './fetch';
-
 async function streamSSE(
   url: string,
   onChunk: (chunk: string) => void
 ): Promise<string> {
-  const response = await authFetch(url);
+  const response = await fetch(url, { credentials: 'include' });
 
   if (!response.ok) {
     throw new Error('Failed to fetch AI response');

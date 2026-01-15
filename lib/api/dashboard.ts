@@ -1,4 +1,3 @@
-import { authFetch } from './fetch';
 import type { Todo } from './todo';
 import type { WeatherData } from './weather';
 import type { ExchangeRate } from './exchange';
@@ -61,7 +60,7 @@ export async function getDashboardData(
     }
   `;
 
-  const res = await authFetch('/api/proxy?path=/graphql', {
+  const res = await fetch('/api/proxy?path=/graphql', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -74,6 +73,7 @@ export async function getDashboardData(
         currencyCodes,
       },
     }),
+    credentials: 'include',
   });
 
   if (!res.ok) throw new Error('Failed to fetch dashboard data');

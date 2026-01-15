@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { authFetch } from './fetch';
 
 export interface ExchangeRate {
   currency: string;
@@ -19,7 +18,9 @@ export async function getAllExchangeRatesWithAxios(): Promise<ExchangeRateRespon
 }
 
 export async function getAllExchangeRatesWithFetch(): Promise<ExchangeRateResponse> {
-  const res = await authFetch('/api/proxy?path=/api/v1/exchange-rate');
+  const res = await fetch('/api/proxy?path=/api/v1/exchange-rate', {
+    credentials: 'include',
+  });
   if (!res.ok) throw new Error('Failed to fetch exchange rates');
   return res.json();
 }

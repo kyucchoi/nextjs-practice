@@ -1,5 +1,3 @@
-import { authFetch } from './fetch';
-
 export interface PollOption {
   id: number;
   optionText: string;
@@ -48,10 +46,11 @@ export interface VoteRequest {
 }
 
 export async function getPoll(pollId: number): Promise<Poll> {
-  const response = await authFetch(
+  const response = await fetch(
     `/api/proxy?path=/api/tetz/polls/${pollId}`,
     {
       method: 'GET',
+      credentials: 'include',
     }
   );
 
@@ -63,10 +62,11 @@ export async function getPoll(pollId: number): Promise<Poll> {
 }
 
 export async function getMyVote(pollId: number): Promise<MyVote> {
-  const response = await authFetch(
+  const response = await fetch(
     `/api/proxy?path=/api/tetz/polls/${pollId}/my-vote`,
     {
       method: 'GET',
+      credentials: 'include',
     }
   );
 
@@ -78,12 +78,13 @@ export async function getMyVote(pollId: number): Promise<MyVote> {
 }
 
 export async function submitVote(voteData: VoteRequest): Promise<void> {
-  const response = await authFetch('/api/proxy?path=/api/tetz/votes', {
+  const response = await fetch('/api/proxy?path=/api/tetz/votes', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(voteData),
+    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -92,8 +93,9 @@ export async function submitVote(voteData: VoteRequest): Promise<void> {
 }
 
 export async function getPolls(): Promise<Poll[]> {
-  const response = await authFetch('/api/proxy?path=/api/tetz/polls', {
+  const response = await fetch('/api/proxy?path=/api/tetz/polls', {
     method: 'GET',
+    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -104,12 +106,13 @@ export async function getPolls(): Promise<Poll[]> {
 }
 
 export async function createPoll(pollData: CreatePollRequest): Promise<Poll> {
-  const response = await authFetch('/api/proxy?path=/api/tetz/polls', {
+  const response = await fetch('/api/proxy?path=/api/tetz/polls', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(pollData),
+    credentials: 'include',
   });
 
   if (!response.ok) {

@@ -1,5 +1,3 @@
-import { authFetch } from './fetch';
-
 export interface Comment {
   id: string;
   pollId: number;
@@ -35,12 +33,13 @@ interface LikeStatusResponse {
 export async function createComment(
   data: CreateCommentRequest
 ): Promise<Comment> {
-  const response = await authFetch(`/api/proxy?path=/api/tetz/comments`, {
+  const response = await fetch(`/api/proxy?path=/api/tetz/comments`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(data),
+    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -73,10 +72,11 @@ export async function createComment(
 }
 
 export async function likeComment(commentId: string): Promise<void> {
-  const response = await authFetch(
+  const response = await fetch(
     `/api/proxy?path=/api/tetz/comments/${commentId}/like`,
     {
       method: 'POST',
+      credentials: 'include',
     }
   );
 
@@ -86,8 +86,9 @@ export async function likeComment(commentId: string): Promise<void> {
 }
 
 export async function getCommentLikeCount(commentId: string): Promise<number> {
-  const response = await authFetch(
-    `/api/proxy?path=/api/tetz/comments/${commentId}/like/count`
+  const response = await fetch(
+    `/api/proxy?path=/api/tetz/comments/${commentId}/like/count`,
+    { credentials: 'include' }
   );
 
   if (!response.ok) {
@@ -101,8 +102,9 @@ export async function getCommentLikeCount(commentId: string): Promise<number> {
 export async function getCommentLikeStatus(
   commentId: string
 ): Promise<boolean> {
-  const response = await authFetch(
-    `/api/proxy?path=/api/tetz/comments/${commentId}/like/status`
+  const response = await fetch(
+    `/api/proxy?path=/api/tetz/comments/${commentId}/like/status`,
+    { credentials: 'include' }
   );
 
   if (!response.ok) {
@@ -114,8 +116,9 @@ export async function getCommentLikeStatus(
 }
 
 export async function getComments(pollId: number): Promise<Comment[]> {
-  const response = await authFetch(
-    `/api/proxy?path=/api/tetz/polls/${pollId}/comments`
+  const response = await fetch(
+    `/api/proxy?path=/api/tetz/polls/${pollId}/comments`,
+    { credentials: 'include' }
   );
 
   if (!response.ok) {
