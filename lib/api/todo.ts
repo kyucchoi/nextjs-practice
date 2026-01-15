@@ -17,32 +17,6 @@ const getOptions = (init?: RequestInit): RequestInit => {
   };
 };
 
-export async function getTodos(): Promise<Todo[]> {
-  const GRAPHQL_QUERY = `
-    query GetAllTodos {
-      getAllTodos {
-        id
-        task
-        completed
-        createdAt
-      }
-    }
-  `;
-
-  const res = await authFetch(
-    '/api/proxy?path=/graphql',
-    getOptions({
-      method: 'POST',
-      body: JSON.stringify({ query: GRAPHQL_QUERY }),
-    })
-  );
-
-  if (!res.ok) throw new Error('Failed to fetch todos');
-
-  const result = await res.json();
-  return result.data.getAllTodos;
-}
-
 export async function createTodo(task: string): Promise<Todo> {
   const res = await authFetch(
     '/api/proxy?path=/api/v1/todo',

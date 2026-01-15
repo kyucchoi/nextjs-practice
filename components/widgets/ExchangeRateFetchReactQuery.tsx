@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/select';
 import { WidgetBox } from '@/components/ui/widget-box';
 import { useQuery } from '@tanstack/react-query';
-import { getAllExchangeRates } from '@/lib/api/exchange';
+import { getAllExchangeRatesWithFetch } from '@/lib/api/exchange';
 
 export default function ExchangeRateFRQ() {
   const [selectedCurrency, setSelectedCurrency] = useState(() => {
@@ -22,7 +22,7 @@ export default function ExchangeRateFRQ() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['exchange-rates'],
-    queryFn: getAllExchangeRates,
+    queryFn: getAllExchangeRatesWithFetch,
     retry: 1,
   });
 

@@ -10,7 +10,10 @@ import {
 } from '@/components/ui/select';
 import { WidgetBox } from '@/components/ui/widget-box';
 import { toast } from 'sonner';
-import { getAllExchangeRates, ExchangeRateResponse } from '@/lib/api/exchange';
+import {
+  getAllExchangeRatesWithFetch,
+  ExchangeRateResponse,
+} from '@/lib/api/exchange';
 
 export default function ExchangeRateFetch() {
   const [selectedCurrency, setSelectedCurrency] = useState(() => {
@@ -28,7 +31,7 @@ export default function ExchangeRateFetch() {
       try {
         setIsLoading(true);
         setIsError(false);
-        const result = await getAllExchangeRates();
+        const result = await getAllExchangeRatesWithFetch();
         setData(result);
       } catch (error) {
         console.error('환율 데이터 가져오기 실패:', error);

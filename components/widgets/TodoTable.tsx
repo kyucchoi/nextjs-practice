@@ -34,7 +34,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import {
-  getTodos,
   createTodo,
   updateTodo,
   deleteTodo,
@@ -42,13 +41,13 @@ import {
   incompleteTodo,
   type Todo,
 } from '@/lib/api/todo';
+import { useDashboard } from '@/contexts/DashboardContext';
 
 type SortField = 'createdAt' | 'completed' | null;
 type SortOrder = 'asc' | 'desc';
 
 export function TodoTable() {
-  const [todos, setTodos] = React.useState<Todo[]>([]);
-  const [loading, setLoading] = React.useState(true);
+  const { todos, setTodos, isLoading: loading, refetch } = useDashboard();
   const [open, setOpen] = React.useState(false);
   const [editOpen, setEditOpen] = React.useState(false);
   const [newTask, setNewTask] = React.useState('');
@@ -66,35 +65,6 @@ export function TodoTable() {
     createdAt: true,
     completed: true,
   });
-
-  React.useEffect(() => {
-    fetchTodos();
-  }, []);
-
-  const fetchTodos = async () => {
-    try {
-      setLoading(true);
-      const data = await getTodos();
-      setTodos(data);
-    } catch (error) {
-      console.error('Failed to fetch todos:', error);
-      toast('할 일 목록을 불러오는데 실패했습니다.', {
-        icon: (
-          <i
-            className="fa-solid fa-xmark"
-            style={{ color: 'var(--css-red)', fontSize: '20px' }}
-          ></i>
-        ),
-        style: {
-          background: 'var(--css-white)',
-          color: 'var(--css-black)',
-          border: '1px solid var(--css-red)',
-        },
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -199,7 +169,7 @@ export function TodoTable() {
       await createTodo(newTask);
       setNewTask('');
       setOpen(false);
-      await fetchTodos();
+      await refetch();
     } catch (error) {
       console.error('Failed to create todo:', error);
       toast('할 일 추가에 실패했습니다.', {
@@ -233,7 +203,7 @@ export function TodoTable() {
       setEditTask('');
       setEditingTodo(null);
       setEditOpen(false);
-      await fetchTodos();
+      await refetch();
     } catch (error) {
       console.error('Failed to update todo:', error);
       toast('할 일 수정에 실패했습니다.', {
@@ -255,7 +225,7 @@ export function TodoTable() {
   const handleDeleteTodo = async (id: number) => {
     try {
       await deleteTodo(id);
-      await fetchTodos();
+      await refetch();
     } catch (error) {
       console.error('Failed to delete todo:', error);
       toast('할 일 삭제에 실패했습니다.', {

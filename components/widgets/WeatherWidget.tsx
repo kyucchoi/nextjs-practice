@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { WidgetBox } from '../ui/widget-box';
 import {
   Select,
@@ -10,9 +9,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { toast } from 'sonner';
 import Image from 'next/image';
-import { getWeather, type WeatherData } from '@/lib/api/weather';
+import { useDashboard } from '@/contexts/DashboardContext';
 
 const CITIES = [
   { value: 'Seoul', label: '서울' },
@@ -24,53 +22,16 @@ const CITIES = [
 ];
 
 export default function WeatherWidget() {
-  const [city, setCity] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('selectedCity') || '';
-    }
-    return '';
-  });
-  const [weather, setWeather] = useState<WeatherData | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-
-  const fetchWeather = async (cityName: string) => {
-    try {
-      setIsLoading(true);
-      setIsError(false);
-
-      const data = await getWeather(cityName);
-      setWeather(data);
-    } catch (error) {
-      console.error('Error fetching weather:', error);
-      setIsError(true);
-      toast('날씨 정보를 불러오는데 실패했습니다.', {
-        icon: (
-          <i
-            className="fa-solid fa-xmark"
-            style={{ color: 'var(--css-red)', fontSize: '20px' }}
-          ></i>
-        ),
-        style: {
-          background: 'var(--css-white)',
-          color: 'var(--css-black)',
-          border: '1px solid var(--css-red)',
-        },
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (city) {
-      fetchWeather(city);
-    }
-  }, [city]);
+  const {
+    weather,
+    isLoading,
+    error: isError,
+    selectedCity: city,
+    setSelectedCity,
+  } = useDashboard();
 
   const handleCityChange = (value: string) => {
-    setCity(value);
-    localStorage.setItem('selectedCity', value);
+    setSelectedCity(value);
   };
 
   const cityLabel = weather

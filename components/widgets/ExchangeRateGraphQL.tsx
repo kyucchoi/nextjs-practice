@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import {
   Select,
   SelectContent,
@@ -10,60 +10,28 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { WidgetBox } from '@/components/ui/widget-box';
-import { toast } from 'sonner';
-import { getExchangeRates, type ExchangeRate } from '@/lib/api/exchange';
+import { useDashboard } from '@/contexts/DashboardContext';
 
 const CURRENCIES = ['USD', 'JPY', 'EUR', 'CNY', 'GBP'];
 
 export default function ExchangeRateGraphQL() {
+  const {
+    exchangeRates: rates,
+    isLoading,
+    error: isError,
+    refetch,
+  } = useDashboard();
   const [selectedCurrency, setSelectedCurrency] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('selectedCurrency') || '';
     }
     return '';
   });
-  const [rates, setRates] = useState<ExchangeRate[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  const fetchRates = useCallback(async () => {
-    if (!selectedCurrency) return;
-
-    try {
-      setIsLoading(true);
-      setIsError(false);
-
-      const data = await getExchangeRates(CURRENCIES);
-      setRates(data);
-      setLastUpdated(new Date());
-    } catch (error) {
-      console.error('Error fetching rates:', error);
-      setIsError(true);
-      toast('환율 정보를 불러오는데 실패했습니다.', {
-        icon: (
-          <i
-            className="fa-solid fa-xmark"
-            style={{ color: 'var(--css-red)', fontSize: '20px' }}
-          ></i>
-        ),
-        style: {
-          background: 'var(--css-white)',
-          color: 'var(--css-black)',
-          border: '1px solid var(--css-red)',
-        },
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }, [selectedCurrency]);
-
-  useEffect(() => {
-    fetchRates();
-  }, [fetchRates]);
-
-  const handleRefresh = () => {
-    fetchRates();
+  const handleRefresh = async () => {
+    await refetch();
+    setLastUpdated(new Date());
   };
 
   const handleCurrencyChange = (value: string) => {
