@@ -7,14 +7,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 export default function Logout() {
+  const router = useRouter();
+
   const handleLogout = async () => {
     try {
       const { clearAuthCookie } = await import('@/app/auth/actions');
       await clearAuthCookie();
-      window.location.href = '/login';
+      router.push('/login');
     } catch (error) {
       console.error('Failed to clear auth cookie:', error);
       toast('로그아웃 처리 중 오류가 발생했습니다.', {

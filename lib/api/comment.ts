@@ -1,5 +1,3 @@
-import { handleAuthError } from './handleAuthError';
-
 export interface Comment {
   id: string;
   pollId: number;
@@ -44,7 +42,6 @@ export async function createComment(
     credentials: 'include',
   });
 
-  handleAuthError(response);
   if (!response.ok) {
     throw new Error('댓글 작성에 실패했습니다.');
   }
@@ -83,7 +80,6 @@ export async function likeComment(commentId: string): Promise<void> {
     }
   );
 
-  handleAuthError(response);
   if (!response.ok) {
     throw new Error('좋아요에 실패했습니다.');
   }
@@ -95,7 +91,6 @@ export async function getCommentLikeCount(commentId: string): Promise<number> {
     { credentials: 'include' }
   );
 
-  handleAuthError(response);
   if (!response.ok) {
     throw new Error('좋아요 수 조회에 실패했습니다.');
   }
@@ -112,7 +107,6 @@ export async function getCommentLikeStatus(
     { credentials: 'include' }
   );
 
-  handleAuthError(response);
   if (!response.ok) {
     throw new Error('좋아요 상태 조회에 실패했습니다.');
   }
@@ -127,7 +121,6 @@ export async function getComments(pollId: number): Promise<Comment[]> {
     { credentials: 'include' }
   );
 
-  handleAuthError(response);
   if (!response.ok) {
     throw new Error('댓글 목록 조회에 실패했습니다.');
   }

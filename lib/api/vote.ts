@@ -1,5 +1,3 @@
-import { handleAuthError } from './handleAuthError';
-
 export interface PollOption {
   id: number;
   optionText: string;
@@ -48,12 +46,14 @@ export interface VoteRequest {
 }
 
 export async function getPoll(pollId: number): Promise<Poll> {
-  const response = await fetch(`/api/proxy?path=/api/tetz/polls/${pollId}`, {
-    method: 'GET',
-    credentials: 'include',
-  });
+  const response = await fetch(
+    `/api/proxy?path=/api/tetz/polls/${pollId}`,
+    {
+      method: 'GET',
+      credentials: 'include',
+    }
+  );
 
-  handleAuthError(response);
   if (!response.ok) {
     throw new Error('Failed to fetch poll');
   }
@@ -70,7 +70,6 @@ export async function getMyVote(pollId: number): Promise<MyVote> {
     }
   );
 
-  handleAuthError(response);
   if (!response.ok) {
     throw new Error('Failed to fetch my vote');
   }
@@ -88,7 +87,6 @@ export async function submitVote(voteData: VoteRequest): Promise<void> {
     credentials: 'include',
   });
 
-  handleAuthError(response);
   if (!response.ok) {
     throw new Error('Failed to submit vote');
   }
@@ -100,7 +98,6 @@ export async function getPolls(): Promise<Poll[]> {
     credentials: 'include',
   });
 
-  handleAuthError(response);
   if (!response.ok) {
     throw new Error('Failed to fetch polls');
   }
@@ -118,7 +115,6 @@ export async function createPoll(pollData: CreatePollRequest): Promise<Poll> {
     credentials: 'include',
   });
 
-  handleAuthError(response);
   if (!response.ok) {
     throw new Error('Failed to create poll');
   }
