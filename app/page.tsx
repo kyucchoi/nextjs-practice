@@ -8,6 +8,7 @@ import SpinnerLoading from '@/components/ui/loading/SpinnerLoading';
 import { useABTest } from '@/lib/hooks/useABTest';
 import VoteBanner from '@/components/VoteBanner';
 import { useEffect } from 'react';
+import { DashboardProvider } from '@/contexts/DashboardContext';
 
 const DashboardDndKit = dynamic(() => import('@/components/DashboardDndKit'), {
   ssr: false,
@@ -37,13 +38,15 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="py-5">
-      <div className="flex justify-between items-center mb-4">
-        <WidgetAddButton />
-        <Logout />
+    <DashboardProvider>
+      <div className="py-5">
+        <div className="flex justify-between items-center mb-4">
+          <WidgetAddButton />
+          <Logout />
+        </div>
+        <VoteBanner />
+        <DashboardDndKit />
       </div>
-      <VoteBanner />
-      <DashboardDndKit />
-    </div>
+    </DashboardProvider>
   );
 }
