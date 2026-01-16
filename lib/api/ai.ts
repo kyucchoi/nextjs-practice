@@ -1,9 +1,12 @@
+import { handleAuthError } from './handleAuthError';
+
 async function streamSSE(
   url: string,
   onChunk: (chunk: string) => void
 ): Promise<string> {
   const response = await fetch(url, { credentials: 'include' });
 
+  handleAuthError(response);
   if (!response.ok) {
     throw new Error('Failed to fetch AI response');
   }

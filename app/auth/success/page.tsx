@@ -1,11 +1,10 @@
 'use client';
 
 import { useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 
 function AuthSuccessContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -18,7 +17,7 @@ function AuthSuccessContent() {
           await setAuthCookie(token);
 
           setTimeout(() => {
-            router.push('/');
+            window.location.href = '/';
           }, 2000);
         } catch (error) {
           console.error('Failed to set auth cookie:', error);
@@ -35,7 +34,7 @@ function AuthSuccessContent() {
               border: '1px solid var(--css-red)',
             },
           });
-          router.push('/login');
+          window.location.href = '/login';
         }
       } else {
         toast('로그인에 실패했습니다.', {
@@ -51,12 +50,12 @@ function AuthSuccessContent() {
             border: '1px solid var(--css-red)',
           },
         });
-        router.push('/login');
+        window.location.href = '/login';
       }
     };
 
     handleAuth();
-  }, [router, searchParams]);
+  }, [searchParams]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">

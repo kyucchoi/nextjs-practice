@@ -1,6 +1,7 @@
 import type { Todo } from './todo';
 import type { WeatherData } from './weather';
 import type { ExchangeRate } from './exchange';
+import { handleAuthError } from './handleAuthError';
 
 export interface DashboardData {
   todos: Todo[];
@@ -76,6 +77,7 @@ export async function getDashboardData(
     credentials: 'include',
   });
 
+  handleAuthError(res);
   if (!res.ok) throw new Error('Failed to fetch dashboard data');
 
   const result: GraphQLDashboardResponse = await res.json();

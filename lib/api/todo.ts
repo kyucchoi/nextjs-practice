@@ -1,3 +1,5 @@
+import { handleAuthError } from './handleAuthError';
+
 export interface Todo {
   id: number;
   task: string;
@@ -24,6 +26,7 @@ export async function createTodo(task: string): Promise<Todo> {
       body: JSON.stringify({ task }),
     })
   );
+  handleAuthError(res);
   if (!res.ok) throw new Error('Failed to create todo');
   return res.json();
 }
@@ -36,6 +39,7 @@ export async function updateTodo(id: number, task: string): Promise<Todo> {
       body: JSON.stringify({ task }),
     })
   );
+  handleAuthError(res);
   if (!res.ok) throw new Error('Failed to update todo');
   return res.json();
 }
@@ -45,6 +49,7 @@ export async function deleteTodo(id: number): Promise<void> {
     `/api/proxy?path=/api/v1/todo/${id}`,
     getOptions({ method: 'DELETE' })
   );
+  handleAuthError(res);
   if (!res.ok) throw new Error('Failed to delete todo');
 }
 
@@ -53,6 +58,7 @@ export async function completeTodo(id: number): Promise<Todo> {
     `/api/proxy?path=/api/v1/todo/${id}/complete`,
     getOptions({ method: 'PATCH' })
   );
+  handleAuthError(res);
   if (!res.ok) throw new Error('Failed to complete todo');
   return res.json();
 }
@@ -62,6 +68,7 @@ export async function incompleteTodo(id: number): Promise<Todo> {
     `/api/proxy?path=/api/v1/todo/${id}/incomplete`,
     getOptions({ method: 'PATCH' })
   );
+  handleAuthError(res);
   if (!res.ok) throw new Error('Failed to incomplete todo');
   return res.json();
 }
