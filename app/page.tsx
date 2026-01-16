@@ -29,12 +29,6 @@ function LoadingVariant() {
 export default function Home() {
   useEffect(() => {
     window.scrollTo(0, 0);
-
-    const timer = setTimeout(() => {
-      window.scrollTo(0, 0);
-    });
-
-    return () => clearTimeout(timer);
   }, []);
 
   return (

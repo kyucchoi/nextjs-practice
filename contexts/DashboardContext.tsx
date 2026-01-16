@@ -8,7 +8,12 @@ import {
   useCallback,
   type ReactNode,
 } from 'react';
-import { getDashboardData, type DashboardData } from '@/lib/api/dashboard';
+import {
+  getDashboardData,
+  getWeatherGraphQL,
+  getExchangeRatesGraphQL,
+  getTodosGraphQL,
+} from '@/lib/api/dashboard';
 import type { Todo } from '@/lib/api/todo';
 import type { WeatherData } from '@/lib/api/weather';
 import type { ExchangeRate } from '@/lib/api/exchange';
@@ -27,6 +32,9 @@ interface DashboardContextType {
   setSelectedCity: (city: string) => void;
 
   refetch: () => Promise<void>;
+  refetchTodos: () => Promise<void>;
+  refetchExchangeRates: () => Promise<void>;
+  refetchWeather: (city: string) => Promise<void>;
   setTodos: (todos: Todo[]) => void;
 }
 
@@ -40,17 +48,22 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [selectedCity, setSelectedCity] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('selectedCity') || 'Seoul';
+      return localStorage.getItem('selectedCity') || '';
     }
-    return 'Seoul';
+    return '';
   });
 
   const fetchData = useCallback(async () => {
+    const initialCity =
+      typeof window !== 'undefined'
+        ? localStorage.getItem('selectedCity') || ''
+        : '';
+
     try {
       setIsLoading(true);
       setError(null);
 
-      const data = await getDashboardData(selectedCity, CURRENCIES);
+      const data = await getDashboardData(initialCity || null, CURRENCIES);
 
       setTodos(data.todos);
       setWeather(data.weather);
@@ -60,7 +73,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedCity]);
+  }, []);
 
   useEffect(() => {
     fetchData();
@@ -73,6 +86,39 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const refetchExchangeRates = useCallback(async () => {
+    try {
+      const data = await getExchangeRatesGraphQL(CURRENCIES);
+      setExchangeRates(data);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'Failed to fetch exchange rates'
+      );
+    }
+  }, []);
+
+  const refetchWeather = useCallback(async (city: string) => {
+    try {
+      const data = await getWeatherGraphQL(city);
+      setWeather(data);
+      setSelectedCity(city);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('selectedCity', city);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch weather');
+    }
+  }, []);
+
+  const refetchTodos = useCallback(async () => {
+    try {
+      const data = await getTodosGraphQL();
+      setTodos(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch todos');
+    }
+  }, []);
+
   return (
     <DashboardContext.Provider
       value={{
@@ -84,6 +130,9 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         selectedCity,
         setSelectedCity: handleSetSelectedCity,
         refetch: fetchData,
+        refetchTodos,
+        refetchExchangeRates,
+        refetchWeather,
         setTodos,
       }}
     >

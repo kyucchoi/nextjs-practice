@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Select,
   SelectContent,
@@ -19,7 +19,7 @@ export default function ExchangeRateGraphQL() {
     exchangeRates: rates,
     isLoading,
     error: isError,
-    refetch,
+    refetchExchangeRates,
   } = useDashboard();
   const [selectedCurrency, setSelectedCurrency] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -29,8 +29,14 @@ export default function ExchangeRateGraphQL() {
   });
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
+  useEffect(() => {
+    if (rates.length > 0 && !lastUpdated) {
+      setLastUpdated(new Date());
+    }
+  }, [rates, lastUpdated]);
+
   const handleRefresh = async () => {
-    await refetch();
+    await refetchExchangeRates();
     setLastUpdated(new Date());
   };
 

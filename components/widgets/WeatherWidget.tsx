@@ -27,11 +27,11 @@ export default function WeatherWidget() {
     isLoading,
     error: isError,
     selectedCity: city,
-    setSelectedCity,
+    refetchWeather,
   } = useDashboard();
 
   const handleCityChange = (value: string) => {
-    setSelectedCity(value);
+    refetchWeather(value);
   };
 
   const cityLabel = weather

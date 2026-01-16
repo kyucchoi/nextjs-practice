@@ -34,12 +34,12 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import {
+  type Todo,
   createTodo,
   updateTodo,
   deleteTodo,
   completeTodo,
   incompleteTodo,
-  type Todo,
 } from '@/lib/api/todo';
 import { useDashboard } from '@/contexts/DashboardContext';
 
@@ -47,7 +47,7 @@ type SortField = 'createdAt' | 'completed' | null;
 type SortOrder = 'asc' | 'desc';
 
 export function TodoTable() {
-  const { todos, setTodos, isLoading: loading, refetch } = useDashboard();
+  const { todos, setTodos, isLoading: loading, refetchTodos } = useDashboard();
   const [open, setOpen] = React.useState(false);
   const [editOpen, setEditOpen] = React.useState(false);
   const [newTask, setNewTask] = React.useState('');
@@ -169,7 +169,7 @@ export function TodoTable() {
       await createTodo(newTask);
       setNewTask('');
       setOpen(false);
-      await refetch();
+      await refetchTodos();
     } catch (error) {
       console.error('Failed to create todo:', error);
       toast('할 일 추가에 실패했습니다.', {
@@ -203,7 +203,7 @@ export function TodoTable() {
       setEditTask('');
       setEditingTodo(null);
       setEditOpen(false);
-      await refetch();
+      await refetchTodos();
     } catch (error) {
       console.error('Failed to update todo:', error);
       toast('할 일 수정에 실패했습니다.', {
@@ -225,7 +225,7 @@ export function TodoTable() {
   const handleDeleteTodo = async (id: number) => {
     try {
       await deleteTodo(id);
-      await refetch();
+      await refetchTodos();
     } catch (error) {
       console.error('Failed to delete todo:', error);
       toast('할 일 삭제에 실패했습니다.', {
